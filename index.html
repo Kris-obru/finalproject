@@ -114,6 +114,8 @@
                         <a href="#" class="btn btn-light btn-lg mb-2 mb-sm-0 mr-sm-3">Get Started</a>
                         <a href="#" class="btn btn-outline-light btn-lg">Learn More</a>
                     </div>
+                    <!-- TEMPORARY: Test Dashboard Button -->
+                    <button class="btn btn-warning mt-3" onclick="showDashboard('Test User')">Test View Dashboard (DEV ONLY)</button>
                 </div>
                 <div class="col-lg-6">
                     <img src="https://placehold.co/600x400" alt="Hero Image" class="img-fluid rounded shadow">
@@ -179,6 +181,192 @@
             </div>
         </div>
     </footer>
+
+    <!-- Dashboard Page (hidden by default) -->
+    <div id="dashboardPage" style="display:none;">
+      <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+        <a class="navbar-brand" href="#" onclick="showLanding()">Your Logo</a>
+        <button class="btn btn-outline-light ml-auto" onclick="signOut()">Sign Out</button>
+      </nav>
+      <div class="container py-4">
+        <button class="btn btn-secondary mb-3" onclick="showLanding()">&larr; Back to Landing Page</button>
+        <div class="card shadow">
+          <div class="card-body">
+            <h1 class="mb-4">Dashboard</h1>
+            <ul class="nav nav-tabs" id="dashboardTabs" role="tablist">
+              <li class="nav-item"><a class="nav-link active" id="overview-tab" data-toggle="tab" href="#overview" role="tab">Overview</a></li>
+              <li class="nav-item"><a class="nav-link" id="courses-tab" data-toggle="tab" href="#courses" role="tab">Courses</a></li>
+              <li class="nav-item"><a class="nav-link" id="teams-tab" data-toggle="tab" href="#teams" role="tab">Teams</a></li>
+              <li class="nav-item"><a class="nav-link" id="reviews-tab" data-toggle="tab" href="#reviews" role="tab">Reviews</a></li>
+              <li class="nav-item"><a class="nav-link" id="reports-tab" data-toggle="tab" href="#reports" role="tab">Reports</a></li>
+              <li class="nav-item"><a class="nav-link" id="settings-tab" data-toggle="tab" href="#settings" role="tab">Settings</a></li>
+            </ul>
+            <div class="tab-content pt-3">
+              <!-- Overview Tab -->
+              <div class="tab-pane fade show active" id="overview" role="tabpanel">
+                <h3>Welcome, <span id="dashboardUserName">User</span>!</h3>
+                <p>This is your dashboard. Use the tabs to manage your courses, teams, reviews, and reports.</p>
+                <ul class="list-group mb-3">
+                  <li class="list-group-item d-flex justify-content-between align-items-center">Courses Enrolled <span class="badge badge-primary badge-pill">2</span></li>
+                  <li class="list-group-item d-flex justify-content-between align-items-center">Teams <span class="badge badge-success badge-pill">1</span></li>
+                  <li class="list-group-item d-flex justify-content-between align-items-center">Pending Reviews <span class="badge badge-warning badge-pill">1</span></li>
+                  <li class="list-group-item d-flex justify-content-between align-items-center">Completed Reviews <span class="badge badge-info badge-pill">3</span></li>
+                </ul>
+              </div>
+              <!-- Courses Tab -->
+              <div class="tab-pane fade" id="courses" role="tabpanel">
+                <h3>Courses</h3>
+                <button class="btn btn-primary mb-3" data-toggle="modal" data-target="#createCourseModal">Create Course</button>
+                <div id="coursesList">
+                  <table class="table table-bordered table-hover">
+                    <thead class="thead-light"><tr><th>Course Name</th><th>Course Code</th><th>Instructor</th><th>Actions</th></tr></thead>
+                    <tbody>
+                      <tr><td>Intro to Web Dev</td><td>CSCI101</td><td>Dr. Smith</td><td><button class="btn btn-sm btn-info">View</button></td></tr>
+                      <tr><td>Software Engineering</td><td>CSCI202</td><td>Prof. Lee</td><td><button class="btn btn-sm btn-info">View</button></td></tr>
+                    </tbody>
+                  </table>
+                </div>
+                <!-- Modal for creating a course -->
+                <div class="modal fade" id="createCourseModal" tabindex="-1" role="dialog" aria-labelledby="createCourseModalLabel" aria-hidden="true">
+                  <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                      <div class="modal-header"><h5 class="modal-title">Create Course</h5><button type="button" class="close" data-dismiss="modal"><span>&times;</span></button></div>
+                      <div class="modal-body">
+                        <form id="createCourseForm">
+                          <div class="form-group"><label>Course Name</label><input type="text" class="form-control" required></div>
+                          <div class="form-group"><label>Course Code</label><input type="text" class="form-control" required></div>
+                          <button type="submit" class="btn btn-primary">Create</button>
+                        </form>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <!-- Teams Tab -->
+              <div class="tab-pane fade" id="teams" role="tabpanel">
+                <h3>Teams</h3>
+                <button class="btn btn-primary mb-3" data-toggle="modal" data-target="#createTeamModal">Create Team</button>
+                <div id="teamsList">
+                  <table class="table table-bordered table-hover">
+                    <thead class="thead-light"><tr><th>Team Name</th><th>Course</th><th>Members</th><th>Actions</th></tr></thead>
+                    <tbody>
+                      <tr><td>Team Alpha</td><td>CSCI101</td><td>Alice, Bob, Carol</td><td><button class="btn btn-sm btn-info">View</button></td></tr>
+                    </tbody>
+                  </table>
+                </div>
+                <!-- Modal for creating a team -->
+                <div class="modal fade" id="createTeamModal" tabindex="-1" role="dialog" aria-labelledby="createTeamModalLabel" aria-hidden="true">
+                  <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                      <div class="modal-header"><h5 class="modal-title">Create Team</h5><button type="button" class="close" data-dismiss="modal"><span>&times;</span></button></div>
+                      <div class="modal-body">
+                        <form id="createTeamForm">
+                          <div class="form-group"><label>Team Name</label><input type="text" class="form-control" required></div>
+                          <button type="submit" class="btn btn-primary">Create</button>
+                        </form>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <!-- Reviews Tab -->
+              <div class="tab-pane fade" id="reviews" role="tabpanel">
+                <h3>Reviews</h3>
+                <button class="btn btn-primary mb-3" data-toggle="modal" data-target="#createReviewModal">Create Review</button>
+                <div id="reviewsList">
+                  <table class="table table-bordered table-hover">
+                    <thead class="thead-light"><tr><th>Review</th><th>Type</th><th>Status</th><th>Due</th><th>Actions</th></tr></thead>
+                    <tbody>
+                      <tr><td>Teamwork Feedback</td><td>Likert</td><td>Pending</td><td>2024-05-10</td><td><button class="btn btn-sm btn-success">Complete</button></td></tr>
+                      <tr><td>Project Reflection</td><td>Short Answer</td><td>Completed</td><td>2024-04-20</td><td><button class="btn btn-sm btn-secondary">View</button></td></tr>
+                    </tbody>
+                  </table>
+                </div>
+                <!-- Modal for creating a review -->
+                <div class="modal fade" id="createReviewModal" tabindex="-1" role="dialog" aria-labelledby="createReviewModalLabel" aria-hidden="true">
+                  <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                      <div class="modal-header"><h5 class="modal-title">Create Review</h5><button type="button" class="close" data-dismiss="modal"><span>&times;</span></button></div>
+                      <div class="modal-body">
+                        <form id="createReviewForm">
+                          <div class="form-group"><label>Review Name</label><input type="text" class="form-control" required></div>
+                          <div class="form-group"><label>Question Type</label><select class="form-control"><option>Likert</option><option>Multiple Choice</option><option>Short Answer</option></select></div>
+                          <div class="form-group"><label>Question</label><input type="text" class="form-control" required></div>
+                          <button type="submit" class="btn btn-primary">Add Question</button>
+                        </form>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <!-- Reports Tab -->
+              <div class="tab-pane fade" id="reports" role="tabpanel">
+                <h3>Reports</h3>
+                <div class="mb-3">
+                  <button class="btn btn-outline-primary">Student Average</button>
+                  <button class="btn btn-outline-primary ml-2">Class Metrics</button>
+                </div>
+                <div id="reportsList">
+                  <div class="row">
+                    <div class="col-md-6">
+                      <h5>Student Average</h5>
+                      <ul class="list-group mb-3">
+                        <li class="list-group-item d-flex justify-content-between align-items-center">Alice <span class="badge badge-primary badge-pill">92</span></li>
+                        <li class="list-group-item d-flex justify-content-between align-items-center">Bob <span class="badge badge-primary badge-pill">88</span></li>
+                        <li class="list-group-item d-flex justify-content-between align-items-center">Carol <span class="badge badge-primary badge-pill">95</span></li>
+                      </ul>
+                    </div>
+                    <div class="col-md-6">
+                      <h5>Class Metrics</h5>
+                      <ul class="list-group mb-3">
+                        <li class="list-group-item">Average: 91.7</li>
+                        <li class="list-group-item">Median: 92</li>
+                        <li class="list-group-item">Std Dev: 3.5</li>
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <!-- Settings Tab -->
+              <div class="tab-pane fade" id="settings" role="tabpanel">
+                <h3>Settings</h3>
+                <button class="btn btn-outline-secondary mb-2" data-toggle="modal" data-target="#passwordResetModal">Reset Password</button>
+                <button class="btn btn-outline-secondary mb-2" data-toggle="modal" data-target="#mfaModal">Multi-Factor Authentication</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Password Reset Modal -->
+    <div class="modal fade" id="passwordResetModal" tabindex="-1" role="dialog" aria-labelledby="passwordResetModalLabel" aria-hidden="true">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header"><h5 class="modal-title">Reset Password</h5><button type="button" class="close" data-dismiss="modal"><span>&times;</span></button></div>
+          <div class="modal-body">
+            <form id="passwordResetForm">
+              <div class="form-group"><label>Email Address</label><input type="email" class="form-control" required></div>
+              <button type="submit" class="btn btn-primary">Send Reset Link</button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- MFA Modal -->
+    <div class="modal fade" id="mfaModal" tabindex="-1" role="dialog" aria-labelledby="mfaModalLabel" aria-hidden="true">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header"><h5 class="modal-title">Multi-Factor Authentication</h5><button type="button" class="close" data-dismiss="modal"><span>&times;</span></button></div>
+          <div class="modal-body">
+            <form id="mfaForm">
+              <div class="form-group"><label>Enter MFA Code</label><input type="text" class="form-control" required></div>
+              <button type="submit" class="btn btn-primary">Verify</button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
 
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.4.1/dist/js/bootstrap.bundle.min.js"></script>
@@ -286,6 +474,33 @@
             function showError(message) {
                 Swal.fire({ title: "Oops!", text: message, icon: "error" });
             }
+        });
+
+        // SPA Navigation Logic
+        function showDashboard(userName = "User") {
+          document.body.scrollTop = 0; document.documentElement.scrollTop = 0;
+          document.getElementById('dashboardPage').style.display = '';
+          document.getElementById('dashboardUserName').textContent = userName;
+          // Hide landing page sections
+          document.querySelectorAll('nav.navbar, section, footer').forEach(e => e.style.display = 'none');
+        }
+        function showLanding() {
+          document.getElementById('dashboardPage').style.display = 'none';
+          document.querySelectorAll('nav.navbar, section, footer').forEach(e => e.style.display = '');
+        }
+        function signOut() { showLanding(); }
+        // Hook up login to show dashboard
+        document.addEventListener('DOMContentLoaded', function() {
+          document.getElementById('btnLogin').addEventListener('click', function() {
+            $('#authModal').modal('hide');
+            showDashboard('Demo User');
+          });
+          document.getElementById('btnSwapLogin').addEventListener('click', function() {
+            $('#frmRegister').hide(); $('#frmLogin').show();
+          });
+          document.getElementById('btnSwapRegister').addEventListener('click', function() {
+            $('#frmLogin').hide(); $('#frmRegister').show();
+          });
         });
     </script>
 </body>
