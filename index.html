@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Welcome</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.4.1/dist/css/bootstrap.min.css" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-light fixed-top bg-white shadow-sm">
+        <div class="container px-4">
+            <a class="navbar-brand text-primary font-weight-bold" href="#">Your Logo</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ml-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="#features">Features</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#contact">Contact</a>
+                    </li>
+                    <li class="nav-item">
+                        <button class="btn btn-primary ml-2" onclick="showAuthModal()">Sign In</button>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Auth Modal -->
+    <div class="modal fade" id="authModal" tabindex="-1" role="dialog" aria-labelledby="authModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-body p-0">
+                    <div class="card border-0">
+                        <div class="card-body px-4 py-3">
+                            <button type="button" class="close position-absolute" style="right: 1rem; top: 1rem;" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                            
+                            <!-- Login Form -->
+                            <form id="frmLogin">
+                                <h1 class="text-center text-primary h2 mb-2">Welcome</h1>
+                                <h3 class="text-center h4 mb-4">Sign In</h3>
+                                <div class="form-group mb-3">
+                                    <label for="txtEmail" class="mb-1">Email</label>
+                                    <input type="email" id="txtEmail" class="form-control" placeholder="Enter your email">
+                                </div>
+                                <div class="form-group mb-4">
+                                    <label for="txtPassword" class="mb-1">Password</label>
+                                    <input type="password" id="txtPassword" class="form-control" placeholder="Enter your password">
+                                </div>
+                                <button id="btnLogin" type="button" class="btn btn-primary btn-lg col-12 mb-2">Sign In</button>
+                                <button id="btnSwapRegister" type="button" class="btn btn-link col-12">New here? Create an account</button>
+                            </form>
+
+                            <!-- Registration Form -->
+                            <form id="frmRegister" style="display:none;">
+                                <h1 class="text-center text-primary h2 mb-2">Welcome</h1>
+                                <h3 class="text-center h4 mb-4">Create Your Account</h3>
+                                <div class="form-group mb-3">
+                                    <label for="txtFirstName" class="mb-1">First Name</label>
+                                    <input type="text" id="txtFirstName" class="form-control" placeholder="Enter your first name">
+                                </div>
+                                <div class="form-group mb-3">
+                                    <label for="txtLastName" class="mb-1">Last Name</label>
+                                    <input type="text" id="txtLastName" class="form-control" placeholder="Enter your last name">
+                                </div>
+                                <div class="form-group mb-3">
+                                    <label for="txtRegEmail" class="mb-1">Email</label>
+                                    <input type="email" id="txtRegEmail" class="form-control" placeholder="Enter your .edu email">
+                                    <small class="form-text text-muted">Please use your university email address</small>
+                                </div>
+                                <div class="form-group mb-3">
+                                    <label class="mb-1">Account Type</label>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="userType" id="studentType" value="student" checked>
+                                        <label class="form-check-label" for="studentType">Student</label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="userType" id="teacherType" value="teacher">
+                                        <label class="form-check-label" for="teacherType">Teacher</label>
+                                    </div>
+                                </div>
+                                <div class="form-group mb-3">
+                                    <label for="txtRegPassword" class="mb-1">Password</label>
+                                    <input type="password" id="txtRegPassword" class="form-control" placeholder="Create a password">
+                                </div>
+                                <div class="form-group mb-4">
+                                    <label for="txtConfirmPassword" class="mb-1">Confirm Password</label>
+                                    <input type="password" id="txtConfirmPassword" class="form-control" placeholder="Confirm your password">
+                                </div>
+                                <button id="btnRegister" type="button" class="btn btn-primary btn-lg col-12 mb-2">Create Account</button>
+                                <button id="btnSwapLogin" type="button" class="btn btn-link col-12">Already have an account? Sign in</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <section class="bg-primary text-white py-5 mt-5">
+        <div class="container px-4">
+            <div class="row align-items-center">
+                <div class="col-lg-6 mb-4 mb-lg-0">
+                    <h1 class="display-4 font-weight-bold mb-3">Your Headline Here</h1>
+                    <p class="lead mb-4">A brief description of your product or service goes here. Keep it simple and engaging.</p>
+                    <div class="d-flex flex-column flex-sm-row">
+                        <a href="#" class="btn btn-light btn-lg mb-2 mb-sm-0 mr-sm-3">Get Started</a>
+                        <a href="#" class="btn btn-outline-light btn-lg">Learn More</a>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <img src="https://placehold.co/600x400" alt="Hero Image" class="img-fluid rounded shadow">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="features" class="py-5">
+        <div class="container px-4">
+            <h2 class="text-center mb-5">Key Features</h2>
+            <div class="row">
+                <div class="col-md-4 mb-4">
+                    <div class="card h-100 border-0 shadow-sm">
+                        <div class="card-body text-center p-4">
+                            <i class="fas fa-rocket fa-3x text-primary mb-3"></i>
+                            <h3 class="card-title h4">Feature One</h3>
+                            <p class="card-text">Description of your first key feature goes here.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4 mb-4">
+                    <div class="card h-100 border-0 shadow-sm">
+                        <div class="card-body text-center p-4">
+                            <i class="fas fa-shield-alt fa-3x text-primary mb-3"></i>
+                            <h3 class="card-title h4">Feature Two</h3>
+                            <p class="card-text">Description of your second key feature goes here.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4 mb-4">
+                    <div class="card h-100 border-0 shadow-sm">
+                        <div class="card-body text-center p-4">
+                            <i class="fas fa-sync fa-3x text-primary mb-3"></i>
+                            <h3 class="card-title h4">Feature Three</h3>
+                            <p class="card-text">Description of your third key feature goes here.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="contact" class="bg-light py-5">
+        <div class="container px-4 text-center">
+            <h2 class="mb-4">Ready to Get Started?</h2>
+            <p class="lead mb-4">Join our community and experience the difference.</p>
+            <button class="btn btn-primary btn-lg" onclick="showAuthModal(true)">Create Your Account</button>
+        </div>
+    </section>
+
+    <footer class="bg-dark text-light py-4">
+        <div class="container px-4">
+            <div class="row">
+                <div class="col-md-6 mb-3 mb-md-0">
+                    <h5 class="mb-3">Your Company</h5>
+                    <p class="mb-0">Your company tagline goes here.</p>
+                </div>
+                <div class="col-md-6 text-md-right">
+                    <h5 class="mb-3">Contact Us</h5>
+                    <p class="mb-0">Email: contact@example.com<br>Phone: (555) 123-4567</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.4.1/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        // Function to show the auth modal
+        function showAuthModal(showRegister = false) {
+            $('#authModal').modal('show');
+            if (showRegister) {
+                $('#frmLogin').hide();
+                $('#frmRegister').show();
+            } else {
+                $('#frmLogin').show();
+                $('#frmRegister').hide();
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            // Form elements
+            const loginForm = document.getElementById('frmLogin');
+            const registerForm = document.getElementById('frmRegister');
+            const btnLogin = document.getElementById('btnLogin');
+            const btnRegister = document.getElementById('btnRegister');
+            const btnSwapRegister = document.getElementById('btnSwapRegister');
+            const btnSwapLogin = document.getElementById('btnSwapLogin');
+            const authModal = document.getElementById('authModal');
+
+            // Input fields
+            const txtEmail = document.getElementById('txtEmail');
+            const txtPassword = document.getElementById('txtPassword');
+            const txtRegEmail = document.getElementById('txtRegEmail');
+            const txtRegPassword = document.getElementById('txtRegPassword');
+            const txtConfirmPassword = document.getElementById('txtConfirmPassword');
+            const txtFirstName = document.getElementById('txtFirstName');
+            const txtLastName = document.getElementById('txtLastName');
+
+            // Event Listeners
+            btnLogin.addEventListener('click', handleLogin);
+            btnRegister.addEventListener('click', handleRegister);
+            btnSwapRegister.addEventListener('click', () => swapForms(loginForm, registerForm));
+            btnSwapLogin.addEventListener('click', () => swapForms(registerForm, loginForm));
+
+            // Functions
+            function handleLogin() {
+                const email = txtEmail.value.trim();
+                const password = txtPassword.value.trim();
+
+                if (!validateEmail(email)) {
+                    showError("Please enter a valid email address.");
+                    return;
+                }
+                if (password.length < 6) {
+                    showError("Your password needs to be at least 6 characters long.");
+                    return;
+                }
+                alert("Welcome back! You've successfully signed in.");
+                $('#authModal').modal('hide');
+            }
+
+            function handleRegister() {
+                const email = txtRegEmail.value.trim();
+                const password = txtRegPassword.value.trim();
+                const confirmPassword = txtConfirmPassword.value.trim();
+                const firstName = txtFirstName.value.trim();
+                const lastName = txtLastName.value.trim();
+                const userType = document.querySelector('input[name="userType"]:checked').value;
+
+                if (!validateEmail(email)) {
+                    showError("Please enter a valid email address.");
+                    return;
+                }
+                if (!validateEduEmail(email)) {
+                    showError("Please use your university email address (.edu).");
+                    return;
+                }
+                if (password.length < 6) {
+                    showError("Your password needs to be at least 6 characters long.");
+                    return;
+                }
+                if (password !== confirmPassword) {
+                    showError("The passwords don't match. Please try again.");
+                    return;
+                }
+                if (firstName.length < 1 || lastName.length < 1) {
+                    showError("Please enter both your first and last name.");
+                    return;
+                }
+                alert(`Great! Your ${userType} account has been created successfully.`);
+                $('#authModal').modal('hide');
+            }
+
+            function swapForms(hideForm, showForm) {
+                hideForm.style.display = 'none';
+                showForm.style.display = 'block';
+            }
+
+            function validateEmail(email) {
+                return /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(email);
+            }
+
+            function validateEduEmail(email) {
+                return /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.edu$/.test(email);
+            }
+
+            function showError(message) {
+                Swal.fire({ title: "Oops!", text: message, icon: "error" });
+            }
+        });
+    </script>
+</body>
+</html>
