@@ -9,200 +9,71 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
 </head>
 <body>
-    <nav class="navbar navbar-expand-lg navbar-light fixed-top bg-white shadow-sm">
+    <!-- Main navigation - always visible -->
+    <nav class="navbar navbar-expand-lg navbar-light fixed-top bg-white shadow-sm" style="z-index: 1000;">
         <div class="container px-4">
-            <a class="navbar-brand text-primary font-weight-bold" href="#">Your Logo</a>
+            <a class="navbar-brand text-primary font-weight-bold" href="#" onclick="event.preventDefault(); showLanding();">Your Logo</a>
             <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav">
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ml-auto">
-                    <li class="nav-item">
-                        <a class="nav-link" href="#features">Features</a>
+                    <li class="nav-item" id="landingNavItems">
+                        <a class="nav-link" href="#" onclick="event.preventDefault(); scrollToSection('features')">Features</a>
                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#contact">Contact</a>
+                    <li class="nav-item" id="landingNavItems">
+                        <a class="nav-link" href="#" onclick="event.preventDefault(); scrollToSection('contact')">Contact</a>
                     </li>
-                    <li class="nav-item">
+                    <li class="nav-item" id="authButtons">
                         <button class="btn btn-primary ml-2" onclick="showAuthModal()">Sign In</button>
+                    </li>
+                    <li class="nav-item" id="userButtons" style="display: none;">
+                        <div class="dropdown">
+                            <button class="btn btn-outline-primary dropdown-toggle" type="button" id="userDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <i class="fas fa-user"></i> <span id="userName">Account</span>
+                            </button>
+                            <div class="dropdown-menu dropdown-menu-right" aria-labelledby="userDropdown">
+                                <a class="dropdown-item" href="#" onclick="event.preventDefault(); showDashboard();">Dashboard</a>
+                                <div class="dropdown-divider"></div>
+                                <button class="dropdown-item" type="button" onclick="signOut()">Sign Out</button>
+                            </div>
+                        </div>
                     </li>
                 </ul>
             </div>
         </div>
     </nav>
 
-    <!-- Auth Modal -->
-    <div class="modal fade" id="authModal" tabindex="-1" role="dialog" aria-labelledby="authModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered" role="document">
-            <div class="modal-content">
-                <div class="modal-body p-0">
-                    <div class="card border-0">
-                        <div class="card-body px-4 py-3">
-                            <button type="button" class="close position-absolute" style="right: 1rem; top: 1rem;" data-dismiss="modal" aria-label="Close">
-                                <span aria-hidden="true">&times;</span>
-                            </button>
-                            
-                            <!-- Login Form -->
-                            <form id="frmLogin">
-                                <h1 class="text-center text-primary h2 mb-2">Welcome</h1>
-                                <h3 class="text-center h4 mb-4">Sign In</h3>
-                                <div class="form-group mb-3">
-                                    <label for="txtEmail" class="mb-1">Email</label>
-                                    <input type="email" id="txtEmail" class="form-control" placeholder="Enter your email">
-                                </div>
-                                <div class="form-group mb-4">
-                                    <label for="txtPassword" class="mb-1">Password</label>
-                                    <input type="password" id="txtPassword" class="form-control" placeholder="Enter your password">
-                                </div>
-                                <button id="btnLogin" type="button" class="btn btn-primary btn-lg col-12 mb-2">Sign In</button>
-                                <button id="btnSwapRegister" type="button" class="btn btn-link col-12">New here? Create an account</button>
-                            </form>
-
-                            <!-- Registration Form -->
-                            <form id="frmRegister" style="display:none;">
-                                <h1 class="text-center text-primary h2 mb-2">Welcome</h1>
-                                <h3 class="text-center h4 mb-4">Create Your Account</h3>
-                                <div class="form-group mb-3">
-                                    <label for="txtFirstName" class="mb-1">First Name</label>
-                                    <input type="text" id="txtFirstName" class="form-control" placeholder="Enter your first name">
-                                </div>
-                                <div class="form-group mb-3">
-                                    <label for="txtLastName" class="mb-1">Last Name</label>
-                                    <input type="text" id="txtLastName" class="form-control" placeholder="Enter your last name">
-                                </div>
-                                <div class="form-group mb-3">
-                                    <label for="txtRegEmail" class="mb-1">Email</label>
-                                    <input type="email" id="txtRegEmail" class="form-control" placeholder="Enter your .edu email">
-                                    <small class="form-text text-muted">Please use your university email address</small>
-                                </div>
-                                <div class="form-group mb-3">
-                                    <label class="mb-1">Account Type</label>
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="radio" name="userType" id="studentType" value="student" checked>
-                                        <label class="form-check-label" for="studentType">Student</label>
-                                    </div>
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="radio" name="userType" id="teacherType" value="teacher">
-                                        <label class="form-check-label" for="teacherType">Teacher</label>
-                                    </div>
-                                </div>
-                                <div class="form-group mb-3">
-                                    <label for="txtRegPassword" class="mb-1">Password</label>
-                                    <input type="password" id="txtRegPassword" class="form-control" placeholder="Create a password">
-                                </div>
-                                <div class="form-group mb-4">
-                                    <label for="txtConfirmPassword" class="mb-1">Confirm Password</label>
-                                    <input type="password" id="txtConfirmPassword" class="form-control" placeholder="Confirm your password">
-                                </div>
-                                <button id="btnRegister" type="button" class="btn btn-primary btn-lg col-12 mb-2">Create Account</button>
-                                <button id="btnSwapLogin" type="button" class="btn btn-link col-12">Already have an account? Sign in</button>
-                            </form>
+    <!-- Main content container -->
+    <div id="mainContent">
+        <div id="landingContent" class="page-content" style="display: none;">
+            <section class="bg-primary text-white py-5 mt-5">
+                <div class="container px-4">
+                    <div class="row align-items-center">
+                        <div class="col-lg-6 mb-4 mb-lg-0">
+                            <h1 class="display-4 font-weight-bold mb-3">Your Headline Here</h1>
+                            <p class="lead mb-4">A brief description of your product or service goes here. Keep it simple and engaging.</p>
+                            <div class="d-flex flex-column flex-sm-row">
+                                <a href="#" class="btn btn-light btn-lg mb-2 mb-sm-0 mr-sm-3" onclick="showAuthModal(true)">Get Started</a>
+                                <a href="#" class="btn btn-outline-light btn-lg">Learn More</a>
+                            </div>
+                        </div>
+                        <div class="col-lg-6">
+                            <img src="https://placehold.co/600x400" alt="Hero Image" class="img-fluid rounded shadow">
                         </div>
                     </div>
                 </div>
-            </div>
+            </section>
         </div>
-    </div>
 
-    <section class="bg-primary text-white py-5 mt-5">
-        <div class="container px-4">
-            <div class="row align-items-center">
-                <div class="col-lg-6 mb-4 mb-lg-0">
-                    <h1 class="display-4 font-weight-bold mb-3">Your Headline Here</h1>
-                    <p class="lead mb-4">A brief description of your product or service goes here. Keep it simple and engaging.</p>
-                    <div class="d-flex flex-column flex-sm-row">
-                        <a href="#" class="btn btn-light btn-lg mb-2 mb-sm-0 mr-sm-3">Get Started</a>
-                        <a href="#" class="btn btn-outline-light btn-lg">Learn More</a>
-                    </div>
-                    <!-- Dev Buttons -->
-                    <div class="mt-4">
-                        <button class="btn btn-warning mr-2" onclick="showDashboard('student')">Student View (DEV)</button>
-                        <button class="btn btn-warning" onclick="showDashboard('teacher')">Teacher View (DEV)</button>
-                    </div>
-                </div>
-                <div class="col-lg-6">
-                    <img src="https://placehold.co/600x400" alt="Hero Image" class="img-fluid rounded shadow">
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <section id="features" class="py-5">
-        <div class="container px-4">
-            <h2 class="text-center mb-5">Key Features</h2>
-            <div class="row">
-                <div class="col-md-4 mb-4">
-                    <div class="card h-100 border-0 shadow-sm">
-                        <div class="card-body text-center p-4">
-                            <i class="fas fa-rocket fa-3x text-primary mb-3"></i>
-                            <h3 class="card-title h4">Feature One</h3>
-                            <p class="card-text">Description of your first key feature goes here.</p>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-4 mb-4">
-                    <div class="card h-100 border-0 shadow-sm">
-                        <div class="card-body text-center p-4">
-                            <i class="fas fa-shield-alt fa-3x text-primary mb-3"></i>
-                            <h3 class="card-title h4">Feature Two</h3>
-                            <p class="card-text">Description of your second key feature goes here.</p>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-4 mb-4">
-                    <div class="card h-100 border-0 shadow-sm">
-                        <div class="card-body text-center p-4">
-                            <i class="fas fa-sync fa-3x text-primary mb-3"></i>
-                            <h3 class="card-title h4">Feature Three</h3>
-                            <p class="card-text">Description of your third key feature goes here.</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <section id="contact" class="bg-light py-5">
-        <div class="container px-4 text-center">
-            <h2 class="mb-4">Ready to Get Started?</h2>
-            <p class="lead mb-4">Join our community and experience the difference.</p>
-            <button class="btn btn-primary btn-lg" onclick="showAuthModal(true)">Create Your Account</button>
-        </div>
-    </section>
-
-    <footer class="bg-dark text-light py-4">
-        <div class="container px-4">
-            <div class="row">
-                <div class="col-md-6 mb-3 mb-md-0">
-                    <h5 class="mb-3">Your Company</h5>
-                    <p class="mb-0">Your company tagline goes here.</p>
-                </div>
-                <div class="col-md-6 text-md-right">
-                    <h5 class="mb-3">Contact Us</h5>
-                    <p class="mb-0">Email: contact@example.com<br>Phone: (555) 123-4567</p>
-                </div>
-            </div>
-        </div>
-    </footer>
-
-    <!-- Student Dashboard Page -->
-    <div id="studentDashboardPage" style="display:none;">
-        <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
-            <div class="container">
-                <a class="navbar-brand" href="#" onclick="showLanding()">Your Logo</a>
-                <div class="navbar-nav ml-auto">
-                    <button class="btn btn-warning mr-2" onclick="switchToTeacherView()">Switch to Teacher View (DEV)</button>
-                    <button class="btn btn-outline-light" onclick="signOut()">Sign Out</button>
-                </div>
-            </div>
-        </nav>
-        <div class="container py-4">
-            <button class="btn btn-secondary mb-3" onclick="showLanding()">&larr; Back to Landing Page</button>
-            <div class="card shadow">
-                <div class="card-body">
+        <!-- Dashboard Pages -->
+        <div id="dashboardContent" class="page-content" style="display: none;">
+            <!-- Student Dashboard -->
+            <div id="studentDashboardPage" style="display: none;">
+                <div class="container py-4" style="padding-top: 5rem;">
                     <div class="d-flex justify-content-between align-items-center mb-4">
+                        <button class="btn btn-secondary" onclick="showLanding()">&larr; Back to Landing Page</button>
                         <h1 class="mb-0">Student Dashboard</h1>
-                        <button class="btn btn-warning" onclick="switchToTeacherView()">Switch to Teacher View (DEV)</button>
                     </div>
                     <ul class="nav nav-tabs" id="studentTabs" role="tablist">
                         <li class="nav-item"><a class="nav-link active" id="student-overview-tab" data-toggle="tab" href="#student-overview" role="tab">Overview</a></li>
@@ -360,338 +231,421 @@
                     </div>
                 </div>
             </div>
-        </div>
-    </div>
 
-    <!-- Teacher Dashboard Page -->
-    <div id="teacherDashboardPage" style="display:none;">
-        <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
-            <div class="container">
-                <a class="navbar-brand" href="#" onclick="showLanding()">Your Logo</a>
-                <div class="navbar-nav ml-auto">
-                    <button class="btn btn-warning mr-2" onclick="switchToStudentView()">Switch to Student View (DEV)</button>
-                    <button class="btn btn-outline-light" onclick="signOut()">Sign Out</button>
-                </div>
-            </div>
-        </nav>
-        <div class="container py-4">
-            <button class="btn btn-secondary mb-3" onclick="showLanding()">&larr; Back to Landing Page</button>
-            <div class="card shadow">
-                <div class="card-body">
+            <!-- Teacher Dashboard -->
+            <div id="teacherDashboardPage" style="display: none;">
+                <div class="container py-4" style="padding-top: 5rem;">
                     <div class="d-flex justify-content-between align-items-center mb-4">
+                        <button class="btn btn-secondary" onclick="showLanding()">&larr; Back to Landing Page</button>
                         <h1 class="mb-0">Instructor Dashboard</h1>
-                        <button class="btn btn-warning" onclick="switchToStudentView()">Switch to Student View (DEV)</button>
                     </div>
-                    <ul class="nav nav-tabs" id="teacherTabs" role="tablist">
-                        <li class="nav-item"><a class="nav-link active" id="teacher-overview-tab" data-toggle="tab" href="#teacher-overview" role="tab">Overview</a></li>
-                        <li class="nav-item"><a class="nav-link" id="teacher-courses-tab" data-toggle="tab" href="#teacher-courses" role="tab">Courses</a></li>
-                        <li class="nav-item"><a class="nav-link" id="teacher-teams-tab" data-toggle="tab" href="#teacher-teams" role="tab">Teams</a></li>
-                        <li class="nav-item"><a class="nav-link" id="teacher-reviews-tab" data-toggle="tab" href="#teacher-reviews" role="tab">Reviews</a></li>
-                        <li class="nav-item"><a class="nav-link" id="teacher-reports-tab" data-toggle="tab" href="#teacher-reports" role="tab">Reports</a></li>
-                    </ul>
-                    <div class="tab-content pt-3">
-                        <!-- Teacher Overview Tab -->
-                        <div class="tab-pane fade show active" id="teacher-overview" role="tabpanel">
-                            <h3>Welcome, <span id="teacherUserName">Instructor</span>!</h3>
-                            <p>This is your instructor dashboard. Use the tabs to manage your courses, teams, and reviews.</p>
-                            <ul class="list-group mb-3">
-                                <li class="list-group-item d-flex justify-content-between align-items-center">Active Courses <span class="badge badge-primary badge-pill">2</span></li>
-                                <li class="list-group-item d-flex justify-content-between align-items-center">Total Students <span class="badge badge-success badge-pill">55</span></li>
-                                <li class="list-group-item d-flex justify-content-between align-items-center">Pending Reviews <span class="badge badge-warning badge-pill">3</span></li>
-                                <li class="list-group-item d-flex justify-content-between align-items-center">Completed Reviews <span class="badge badge-info badge-pill">12</span></li>
+                    <div class="card shadow">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-center mb-4">
+                                <h1 class="mb-0">Instructor Dashboard</h1>
+                            </div>
+                            <ul class="nav nav-tabs" id="teacherTabs" role="tablist">
+                                <li class="nav-item"><a class="nav-link active" id="teacher-overview-tab" data-toggle="tab" href="#teacher-overview" role="tab">Overview</a></li>
+                                <li class="nav-item"><a class="nav-link" id="teacher-courses-tab" data-toggle="tab" href="#teacher-courses" role="tab">Courses</a></li>
+                                <li class="nav-item"><a class="nav-link" id="teacher-teams-tab" data-toggle="tab" href="#teacher-teams" role="tab">Teams</a></li>
+                                <li class="nav-item"><a class="nav-link" id="teacher-reviews-tab" data-toggle="tab" href="#teacher-reviews" role="tab">Reviews</a></li>
+                                <li class="nav-item"><a class="nav-link" id="teacher-reports-tab" data-toggle="tab" href="#teacher-reports" role="tab">Reports</a></li>
                             </ul>
-                        </div>
-                        <!-- Teacher Courses Tab -->
-                        <div class="tab-pane fade" id="teacher-courses" role="tabpanel">
-                            <h3>My Courses</h3>
-                            <button class="btn btn-primary mb-3" data-toggle="modal" data-target="#createCourseModal">Create Course</button>
-                            <table class="table table-bordered table-hover">
-                                <thead class="thead-light">
-                                    <tr>
-                                        <th>Course Name</th>
-                                        <th>Course Code</th>
-                                        <th>CRN</th>
-                                        <th>Total Students</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr>
-                                        <td>Intro to Web Dev</td>
-                                        <td>CSCI101</td>
-                                        <td>12345</td>
-                                        <td>25</td>
-                                    </tr>
-                                    <tr>
-                                        <td>Software Engineering</td>
-                                        <td>CSCI202</td>
-                                        <td>23456</td>
-                                        <td>30</td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                            <!-- Create Course Modal -->
-                            <div class="modal fade" id="createCourseModal" tabindex="-1" role="dialog">
-                                <div class="modal-dialog" role="document">
-                                    <div class="modal-content">
-                                        <div class="modal-header">
-                                            <h5 class="modal-title">Create Course</h5>
-                                            <button type="button" class="close" data-dismiss="modal">
-                                                <span>&times;</span>
-                                            </button>
-                                        </div>
-                                        <div class="modal-body">
-                                            <form id="createCourseForm">
-                                                <div class="form-group">
-                                                    <label>Course Name</label>
-                                                    <input type="text" class="form-control" required>
-                                                </div>
-                                                <div class="form-group">
-                                                    <label>Course Code</label>
-                                                    <input type="text" class="form-control" required>
-                                                </div>
-                                                <div class="form-group">
-                                                    <label>CRN</label>
-                                                    <input type="text" class="form-control" required>
-                                                </div>
-                                                <button type="submit" class="btn btn-primary">Create</button>
-                                            </form>
-                                        </div>
+                            <div class="tab-content pt-3">
+                                <!-- Teacher Overview Tab -->
+                                <div class="tab-pane fade show active" id="teacher-overview" role="tabpanel">
+                                    <h3>Welcome, <span id="teacherUserName">Instructor</span>!</h3>
+                                    <p>This is your instructor dashboard. Use the tabs to manage your courses, teams, and reviews.</p>
+                                    <ul class="list-group mb-3">
+                                        <li class="list-group-item d-flex justify-content-between align-items-center">Active Courses <span class="badge badge-primary badge-pill" id="activeCoursesCount">0</span></li>
+                                        <li class="list-group-item d-flex justify-content-between align-items-center">Total Students <span class="badge badge-success badge-pill" id="totalStudentsCount">0</span></li>
+                                        <li class="list-group-item d-flex justify-content-between align-items-center">Pending Reviews <span class="badge badge-warning badge-pill" id="pendingReviewsCount">0</span></li>
+                                        <li class="list-group-item d-flex justify-content-between align-items-center">Completed Reviews <span class="badge badge-info badge-pill" id="completedReviewsCount">0</span></li>
+                                    </ul>
+                                </div>
+                                <!-- Teacher Courses Tab -->
+                                <div class="tab-pane fade" id="teacher-courses" role="tabpanel">
+                                    <div class="d-flex justify-content-between align-items-center mb-3">
+                                        <h3>My Courses</h3>
+                                        <button class="btn btn-primary" data-toggle="modal" data-target="#createCourseModal">Create Course</button>
+                                    </div>
+                                    <div class="table-responsive">
+                                        <table class="table table-bordered table-hover" id="coursesTable">
+                                            <thead class="thead-light">
+                                                <tr>
+                                                    <th>Course Name</th>
+                                                    <th>Course Number</th>
+                                                    <th>Section</th>
+                                                    <th>Term</th>
+                                                    <th>Start Date</th>
+                                                    <th>End Date</th>
+                                                    <th>Actions</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody id="coursesTableBody">
+                                                <!-- Courses will be populated here -->
+                                            </tbody>
+                                        </table>
                                     </div>
                                 </div>
-                            </div>
-                        </div>
-                        <!-- Teacher Teams Tab -->
-                        <div class="tab-pane fade" id="teacher-teams" role="tabpanel">
-                            <h3>Course Teams</h3>
-                            <button class="btn btn-primary mb-3" data-toggle="modal" data-target="#createTeamModal">Create Team</button>
-                            <table class="table table-bordered table-hover">
-                                <thead class="thead-light">
-                                    <tr>
-                                        <th>Team Name</th>
-                                        <th>Course</th>
-                                        <th>Members</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr>
-                                        <td>Team Alpha</td>
-                                        <td>CSCI101</td>
-                                        <td>Alice, Bob, Carol</td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                            <!-- Create Team Modal -->
-                            <div class="modal fade" id="createTeamModal" tabindex="-1" role="dialog">
-                                <div class="modal-dialog" role="document">
-                                    <div class="modal-content">
-                                        <div class="modal-header">
-                                            <h5 class="modal-title">Create Team</h5>
-                                            <button type="button" class="close" data-dismiss="modal">
-                                                <span>&times;</span>
-                                            </button>
-                                        </div>
-                                        <div class="modal-body">
-                                            <form id="createTeamForm">
-                                                <div class="form-group">
-                                                    <label>Team Name</label>
-                                                    <input type="text" class="form-control" required>
-                                                </div>
-                                                <div class="form-group">
-                                                    <label>Course</label>
-                                                    <select class="form-control" required>
-                                                        <option>CSCI101 - Intro to Web Dev</option>
-                                                        <option>CSCI202 - Software Engineering</option>
-                                                    </select>
-                                                </div>
-                                                <div class="form-group">
-                                                    <label>Select Members</label>
-                                                    <select class="form-control" multiple required>
-                                                        <option>Alice</option>
-                                                        <option>Bob</option>
-                                                        <option>Carol</option>
-                                                        <option>Dave</option>
-                                                    </select>
-                                                </div>
-                                                <button type="submit" class="btn btn-primary">Create</button>
-                                            </form>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <!-- Teacher Reviews Tab -->
-                        <div class="tab-pane fade" id="teacher-reviews" role="tabpanel">
-                            <h3>Reviews</h3>
-                            <button class="btn btn-primary mb-3" data-toggle="modal" data-target="#createReviewModal">Create Review</button>
-                            <div class="card mb-4">
-                                <div class="card-header bg-warning text-white">
-                                    <h5 class="card-title mb-0">Pending Reviews</h5>
-                                </div>
-                                <div class="card-body">
-                                    <table class="table">
-                                        <thead>
+                                <!-- Teacher Teams Tab -->
+                                <div class="tab-pane fade" id="teacher-teams" role="tabpanel">
+                                    <h3>Course Teams</h3>
+                                    <button class="btn btn-primary mb-3" data-toggle="modal" data-target="#createTeamModal">Create Team</button>
+                                    <table class="table table-bordered table-hover">
+                                        <thead class="thead-light">
                                             <tr>
-                                                <th>Review Name</th>
+                                                <th>Team Name</th>
                                                 <th>Course</th>
-                                                <th>Due Date</th>
-                                                <th>Visibility</th>
-                                                <th>Status</th>
+                                                <th>Members</th>
                                             </tr>
                                         </thead>
                                         <tbody>
                                             <tr>
-                                                <td>Teamwork Feedback</td>
+                                                <td>Team Alpha</td>
                                                 <td>CSCI101</td>
-                                                <td>2024-05-10</td>
-                                                <td><span class="badge badge-info">Private</span></td>
-                                                <td><span class="badge badge-warning">Pending</span></td>
+                                                <td>Alice, Bob, Carol</td>
                                             </tr>
                                         </tbody>
                                     </table>
-                                </div>
-                            </div>
-                            <div class="card">
-                                <div class="card-header bg-success text-white">
-                                    <h5 class="card-title mb-0">Completed Reviews</h5>
-                                </div>
-                                <div class="card-body">
-                                    <table class="table">
-                                        <thead>
-                                            <tr>
-                                                <th>Review Name</th>
-                                                <th>Course</th>
-                                                <th>Completion Date</th>
-                                                <th>Visibility</th>
-                                                <th>Status</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            <tr>
-                                                <td>Project Reflection</td>
-                                                <td>CSCI202</td>
-                                                <td>2024-04-20</td>
-                                                <td><span class="badge badge-success">Public</span></td>
-                                                <td><span class="badge badge-success">Completed</span></td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </div>
-                            <!-- Create Review Modal -->
-                            <div class="modal fade" id="createReviewModal" tabindex="-1" role="dialog">
-                                <div class="modal-dialog" role="document">
-                                    <div class="modal-content">
-                                        <div class="modal-header">
-                                            <h5 class="modal-title">Create Review</h5>
-                                            <button type="button" class="close" data-dismiss="modal">
-                                                <span>&times;</span>
-                                            </button>
-                                        </div>
-                                        <div class="modal-body">
-                                            <form id="createReviewForm">
-                                                <div class="form-group">
-                                                    <label>Review Name</label>
-                                                    <input type="text" class="form-control" required>
+                                    <!-- Create Team Modal -->
+                                    <div class="modal fade" id="createTeamModal" tabindex="-1" role="dialog">
+                                        <div class="modal-dialog" role="document">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title">Create Team</h5>
+                                                    <button type="button" class="close" data-dismiss="modal">
+                                                        <span>&times;</span>
+                                                    </button>
                                                 </div>
-                                                <div class="form-group">
-                                                    <label>Course</label>
-                                                    <select class="form-control" required>
-                                                        <option>CSCI101 - Intro to Web Dev</option>
-                                                        <option>CSCI202 - Software Engineering</option>
-                                                    </select>
+                                                <div class="modal-body">
+                                                    <form id="createTeamForm">
+                                                        <div class="form-group">
+                                                            <label>Team Name</label>
+                                                            <input type="text" class="form-control" required>
+                                                        </div>
+                                                        <div class="form-group">
+                                                            <label>Course</label>
+                                                            <select class="form-control" required>
+                                                                <option>CSCI101 - Intro to Web Dev</option>
+                                                                <option>CSCI202 - Software Engineering</option>
+                                                            </select>
+                                                        </div>
+                                                        <div class="form-group">
+                                                            <label>Select Members</label>
+                                                            <select class="form-control" multiple required>
+                                                                <option>Alice</option>
+                                                                <option>Bob</option>
+                                                                <option>Carol</option>
+                                                                <option>Dave</option>
+                                                            </select>
+                                                        </div>
+                                                        <button type="submit" class="btn btn-primary">Create</button>
+                                                    </form>
                                                 </div>
-                                                <div class="form-group">
-                                                    <label>Due Date</label>
-                                                    <input type="date" class="form-control" required>
-                                                </div>
-                                                <div class="form-group">
-                                                    <label>Visibility</label>
-                                                    <select class="form-control" required>
-                                                        <option value="public">Public</option>
-                                                        <option value="private">Private</option>
-                                                    </select>
-                                                </div>
-                                                <div class="form-group">
-                                                    <label>Question Type</label>
-                                                    <select class="form-control" required>
-                                                        <option>Likert Scale</option>
-                                                        <option>Multiple Choice</option>
-                                                        <option>Short Answer</option>
-                                                    </select>
-                                                </div>
-                                                <div class="form-group">
-                                                    <label>Question</label>
-                                                    <input type="text" class="form-control" required>
-                                                </div>
-                                                <button type="button" class="btn btn-secondary" onclick="addQuestion()">Add Question</button>
-                                                <button type="submit" class="btn btn-primary">Create Review</button>
-                                            </form>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
-                            </div>
-                        </div>
-                        <!-- Teacher Reports Tab -->
-                        <div class="tab-pane fade" id="teacher-reports" role="tabpanel">
-                            <h3>Reports</h3>
-                            <div class="row">
-                                <div class="col-md-6">
+                                <!-- Teacher Reviews Tab -->
+                                <div class="tab-pane fade" id="teacher-reviews" role="tabpanel">
+                                    <h3>Reviews</h3>
+                                    <button class="btn btn-primary mb-3" data-toggle="modal" data-target="#createReviewModal">Create Review</button>
                                     <div class="card mb-4">
-                                        <div class="card-header bg-primary text-white">
-                                            <h5 class="card-title mb-0">Student Averages</h5>
+                                        <div class="card-header bg-warning text-white">
+                                            <h5 class="card-title mb-0">Pending Reviews</h5>
                                         </div>
                                         <div class="card-body">
                                             <table class="table">
                                                 <thead>
                                                     <tr>
-                                                        <th>Student</th>
-                                                        <th>Average</th>
+                                                        <th>Review Name</th>
+                                                        <th>Course</th>
+                                                        <th>Due Date</th>
+                                                        <th>Visibility</th>
+                                                        <th>Status</th>
                                                     </tr>
                                                 </thead>
                                                 <tbody>
                                                     <tr>
-                                                        <td>Alice</td>
-                                                        <td>92%</td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td>Bob</td>
-                                                        <td>88%</td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td>Carol</td>
-                                                        <td>95%</td>
+                                                        <td>Teamwork Feedback</td>
+                                                        <td>CSCI101</td>
+                                                        <td>2024-05-10</td>
+                                                        <td><span class="badge badge-info">Private</span></td>
+                                                        <td><span class="badge badge-warning">Pending</span></td>
                                                     </tr>
                                                 </tbody>
                                             </table>
                                         </div>
                                     </div>
-                                </div>
-                                <div class="col-md-6">
                                     <div class="card">
-                                        <div class="card-header bg-info text-white">
-                                            <h5 class="card-title mb-0">Class Metrics</h5>
+                                        <div class="card-header bg-success text-white">
+                                            <h5 class="card-title mb-0">Completed Reviews</h5>
                                         </div>
                                         <div class="card-body">
-                                            <ul class="list-group">
-                                                <li class="list-group-item d-flex justify-content-between align-items-center">
-                                                    Average
-                                                    <span class="badge badge-primary badge-pill">91.7%</span>
-                                                </li>
-                                                <li class="list-group-item d-flex justify-content-between align-items-center">
-                                                    Median
-                                                    <span class="badge badge-primary badge-pill">92%</span>
-                                                </li>
-                                                <li class="list-group-item d-flex justify-content-between align-items-center">
-                                                    Standard Deviation
-                                                    <span class="badge badge-primary badge-pill">3.5</span>
-                                                </li>
-                                            </ul>
+                                            <table class="table">
+                                                <thead>
+                                                    <tr>
+                                                        <th>Review Name</th>
+                                                        <th>Course</th>
+                                                        <th>Completion Date</th>
+                                                        <th>Visibility</th>
+                                                        <th>Status</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr>
+                                                        <td>Project Reflection</td>
+                                                        <td>CSCI202</td>
+                                                        <td>2024-04-20</td>
+                                                        <td><span class="badge badge-success">Public</span></td>
+                                                        <td><span class="badge badge-success">Completed</span></td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                    <!-- Create Review Modal -->
+                                    <div class="modal fade" id="createReviewModal" tabindex="-1" role="dialog">
+                                        <div class="modal-dialog" role="document">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title">Create Review</h5>
+                                                    <button type="button" class="close" data-dismiss="modal">
+                                                        <span>&times;</span>
+                                                    </button>
+                                                </div>
+                                                <div class="modal-body">
+                                                    <form id="createReviewForm">
+                                                        <div class="form-group">
+                                                            <label>Review Name</label>
+                                                            <input type="text" class="form-control" required>
+                                                        </div>
+                                                        <div class="form-group">
+                                                            <label>Course</label>
+                                                            <select class="form-control" required>
+                                                                <option>CSCI101 - Intro to Web Dev</option>
+                                                                <option>CSCI202 - Software Engineering</option>
+                                                            </select>
+                                                        </div>
+                                                        <div class="form-group">
+                                                            <label>Due Date</label>
+                                                            <input type="date" class="form-control" required>
+                                                        </div>
+                                                        <div class="form-group">
+                                                            <label>Visibility</label>
+                                                            <select class="form-control" required>
+                                                                <option value="public">Public</option>
+                                                                <option value="private">Private</option>
+                                                            </select>
+                                                        </div>
+                                                        <div class="form-group">
+                                                            <label>Question Type</label>
+                                                            <select class="form-control" required>
+                                                                <option>Likert Scale</option>
+                                                                <option>Multiple Choice</option>
+                                                                <option>Short Answer</option>
+                                                            </select>
+                                                        </div>
+                                                        <div class="form-group">
+                                                            <label>Question</label>
+                                                            <input type="text" class="form-control" required>
+                                                        </div>
+                                                        <button type="button" class="btn btn-secondary" onclick="addQuestion()">Add Question</button>
+                                                        <button type="submit" class="btn btn-primary">Create Review</button>
+                                                    </form>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- Teacher Reports Tab -->
+                                <div class="tab-pane fade" id="teacher-reports" role="tabpanel">
+                                    <h3>Reports</h3>
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="card mb-4">
+                                                <div class="card-header bg-primary text-white">
+                                                    <h5 class="card-title mb-0">Student Averages</h5>
+                                                </div>
+                                                <div class="card-body">
+                                                    <table class="table">
+                                                        <thead>
+                                                            <tr>
+                                                                <th>Student</th>
+                                                                <th>Average</th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                            <tr>
+                                                                <td>Alice</td>
+                                                                <td>92%</td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td>Bob</td>
+                                                                <td>88%</td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td>Carol</td>
+                                                                <td>95%</td>
+                                                            </tr>
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="card">
+                                                <div class="card-header bg-info text-white">
+                                                    <h5 class="card-title mb-0">Class Metrics</h5>
+                                                </div>
+                                                <div class="card-body">
+                                                    <ul class="list-group">
+                                                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                                                            Average
+                                                            <span class="badge badge-primary badge-pill">91.7%</span>
+                                                        </li>
+                                                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                                                            Median
+                                                            <span class="badge badge-primary badge-pill">92%</span>
+                                                        </li>
+                                                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                                                            Standard Deviation
+                                                            <span class="badge badge-primary badge-pill">3.5</span>
+                                                        </li>
+                                                    </ul>
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Auth Modal -->
+    <div class="modal fade" id="authModal" tabindex="-1" role="dialog" aria-labelledby="authModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-body p-0">
+                    <div class="card border-0">
+                        <div class="card-body px-4 py-3">
+                            <button type="button" class="close position-absolute" style="right: 1rem; top: 1rem;" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                            
+                            <!-- Login Form -->
+                            <form id="frmLogin">
+                                <h1 class="text-center text-primary h2 mb-2">Welcome</h1>
+                                <h3 class="text-center h4 mb-4">Sign In</h3>
+                                <div class="form-group mb-3">
+                                    <label for="txtEmail" class="mb-1">Email</label>
+                                    <input type="email" id="txtEmail" class="form-control" placeholder="Enter your email">
+                                </div>
+                                <div class="form-group mb-4">
+                                    <label for="txtPassword" class="mb-1">Password</label>
+                                    <input type="password" id="txtPassword" class="form-control" placeholder="Enter your password">
+                                </div>
+                                <button id="btnLogin" type="button" class="btn btn-primary btn-lg col-12 mb-2">Sign In</button>
+                                <button id="btnSwapRegister" type="button" class="btn btn-link col-12">New here? Create an account</button>
+                            </form>
+
+                            <!-- Registration Form -->
+                            <form id="frmRegister" style="display:none;">
+                                <h1 class="text-center text-primary h2 mb-2">Welcome</h1>
+                                <h3 class="text-center h4 mb-4">Create Your Account</h3>
+                                <div class="form-group mb-3">
+                                    <label for="txtFirstName" class="mb-1">First Name</label>
+                                    <input type="text" id="txtFirstName" class="form-control" placeholder="Enter your first name">
+                                </div>
+                                <div class="form-group mb-3">
+                                    <label for="txtLastName" class="mb-1">Last Name</label>
+                                    <input type="text" id="txtLastName" class="form-control" placeholder="Enter your last name">
+                                </div>
+                                <div class="form-group mb-3">
+                                    <label for="txtRegEmail" class="mb-1">Email</label>
+                                    <input type="email" id="txtRegEmail" class="form-control" placeholder="Enter your .edu email">
+                                    <small class="form-text text-muted">Please use your university email address</small>
+                                </div>
+                                <div class="form-group mb-3">
+                                    <label class="mb-1">Account Type</label>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="userType" id="studentType" value="student" checked>
+                                        <label class="form-check-label" for="studentType">Student</label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="userType" id="teacherType" value="teacher">
+                                        <label class="form-check-label" for="teacherType">Teacher</label>
+                                    </div>
+                                </div>
+                                <div class="form-group mb-3">
+                                    <label for="txtRegPassword" class="mb-1">Password</label>
+                                    <input type="password" id="txtRegPassword" class="form-control" placeholder="Create a password">
+                                </div>
+                                <div class="form-group mb-4">
+                                    <label for="txtConfirmPassword" class="mb-1">Confirm Password</label>
+                                    <input type="password" id="txtConfirmPassword" class="form-control" placeholder="Confirm your password">
+                                </div>
+                                <button id="btnRegister" type="button" class="btn btn-primary btn-lg col-12 mb-2">Create Account</button>
+                                <button id="btnSwapLogin" type="button" class="btn btn-link col-12">Already have an account? Sign in</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Create Course Modal -->
+    <div class="modal fade" id="createCourseModal" tabindex="-1" role="dialog" aria-labelledby="createCourseModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="createCourseModalLabel">Create New Course</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form id="createCourseForm">
+                        <div class="form-group">
+                            <label for="courseName">Course Name</label>
+                            <input type="text" class="form-control" id="courseName" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="courseNumber">Course Number</label>
+                            <input type="text" class="form-control" id="courseNumber" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="courseSection">Section</label>
+                            <input type="text" class="form-control" id="courseSection" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="courseTerm">Term</label>
+                            <select class="form-control" id="courseTerm" required>
+                                <option value="Spring">Spring</option>
+                                <option value="Summer">Summer</option>
+                                <option value="Fall">Fall</option>
+                                <option value="Winter">Winter</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="startDate">Start Date</label>
+                            <input type="date" class="form-control" id="startDate" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="endDate">End Date</label>
+                            <input type="date" class="form-control" id="endDate" required>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-primary" id="createCourseBtn">Create Course</button>
                 </div>
             </div>
         </div>
@@ -701,8 +655,60 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.4.1/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
+        // API base URL
+        const API_BASE_URL = 'http://localhost:3000/api';
+
+        // Add state management
+        const AppState = {
+            currentPage: 'landing',
+            currentUser: null,
+            currentSessionId: null,
+            isLoading: false
+        };
+
+        // Global error handling functions
+        function showError(message) {
+            Swal.fire({
+                title: 'Error',
+                text: message,
+                icon: 'error'
+            });
+        }
+
+        function showSuccess(message) {
+            Swal.fire({
+                title: 'Success',
+                text: message,
+                icon: 'success'
+            });
+        }
+
+        // Add loading overlay to prevent flickering
+        const loadingOverlay = document.createElement('div');
+        loadingOverlay.id = 'loadingOverlay';
+        loadingOverlay.style.cssText = `
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: white;
+            z-index: 9999;
+            display: none;
+        `;
+        document.body.appendChild(loadingOverlay);
+
+        function showLoading() {
+            loadingOverlay.style.display = 'block';
+        }
+
+        function hideLoading() {
+            loadingOverlay.style.display = 'none';
+        }
+
         // Function to show the auth modal
         function showAuthModal(showRegister = false) {
+            // Show the modal
             $('#authModal').modal('show');
             if (showRegister) {
                 $('#frmLogin').hide();
@@ -738,24 +744,49 @@
             btnSwapRegister.addEventListener('click', () => swapForms(loginForm, registerForm));
             btnSwapLogin.addEventListener('click', () => swapForms(registerForm, loginForm));
 
-            // Functions
-            function handleLogin() {
-                const email = txtEmail.value.trim();
-                const password = txtPassword.value.trim();
-
-                if (!validateEmail(email)) {
-                    showError("Please enter a valid email address.");
-                    return;
-                }
-                if (password.length < 6) {
-                    showError("Your password needs to be at least 6 characters long.");
-                    return;
-                }
-                alert("Welcome back! You've successfully signed in.");
-                $('#authModal').modal('hide');
+            // Add event listener for sign out button
+            const signOutButton = document.querySelector('.dropdown-item[onclick*="signOut"]');
+            if (signOutButton) {
+                signOutButton.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    signOut();
+                });
             }
 
-            function handleRegister() {
+            // Functions
+            async function handleLogin() {
+                try {
+                    const response = await fetch(`${API_BASE_URL}/auth/login`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({ 
+                            email: txtEmail.value.trim(), 
+                            password: txtPassword.value.trim() 
+                        })
+                    });
+
+                    if (!response.ok) throw new Error('Login failed');
+
+                    const data = await response.json();
+                    AppState.currentUser = data.user;
+                    AppState.currentSessionId = data.sessionId;
+                    
+                    localStorage.setItem('currentUser', JSON.stringify(data.user));
+                    localStorage.setItem('sessionId', data.sessionId);
+                    
+                    $('#authModal').modal('hide');
+                    updateUIForLoggedInUser();
+                    showDashboard();
+                } catch (error) {
+                    showError(error.message);
+                }
+            }
+
+            async function handleRegister() {
+                showLoading();
                 const email = txtRegEmail.value.trim();
                 const password = txtRegPassword.value.trim();
                 const confirmPassword = txtConfirmPassword.value.trim();
@@ -783,8 +814,40 @@
                     showError("Please enter both your first and last name.");
                     return;
                 }
-                alert(`Great! Your ${userType} account has been created successfully.`);
-                $('#authModal').modal('hide');
+
+                try {
+                    const response = await fetch(`${API_BASE_URL}/auth/register`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            email,
+                            password,
+                            firstName,
+                            lastName,
+                            userType
+                        })
+                    });
+
+                    if (!response.ok) {
+                        throw new Error('Registration failed');
+                    }
+
+                    const data = await response.json();
+                    AppState.currentUser = data.user;
+                    AppState.currentSessionId = data.sessionId;
+                    
+                    localStorage.setItem('currentUser', JSON.stringify(data.user));
+                    localStorage.setItem('sessionId', data.sessionId);
+                    
+                    $('#authModal').modal('hide');
+                    updateUIForLoggedInUser();
+                    showDashboard();
+                } catch (error) {
+                    hideLoading();
+                    showError(error.message);
+                }
             }
 
             function swapForms(hideForm, showForm) {
@@ -800,48 +863,370 @@
                 return /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.edu$/.test(email);
             }
 
-            function showError(message) {
-                Swal.fire({ title: "Oops!", text: message, icon: "error" });
+            // Update the modal event handlers
+            $('#authModal').on('show.bs.modal', function () {
+                // Keep the current page visible
+                const currentPage = document.getElementById(`${AppState.currentPage}Content`);
+                if (currentPage) {
+                    currentPage.style.display = 'block';
+                    currentPage.classList.add('active');
+                }
+            });
+
+            $('#authModal').on('hidden.bs.modal', function () {
+                // Show appropriate content when modal closes
+                if (AppState.currentUser) {
+                    showDashboard();
+                } else {
+                    showLanding();
+                }
+            });
+        });
+
+        // Check for existing session and page state on load
+        document.addEventListener('DOMContentLoaded', () => {
+            // Hide all content initially
+            const pages = document.querySelectorAll('.page-content');
+            pages.forEach(page => {
+                page.style.display = 'none';
+                page.classList.remove('active');
+            });
+
+            // Check session and restore state
+            const user = localStorage.getItem('currentUser');
+            const sessionId = localStorage.getItem('sessionId');
+            const currentPage = sessionStorage.getItem('currentPage');
+            
+            if (user && sessionId) {
+                AppState.currentUser = JSON.parse(user);
+                AppState.currentSessionId = sessionId;
+                updateUIForLoggedInUser();
+                
+                if (currentPage === 'dashboard') {
+                    showDashboard();
+                } else {
+                    showLanding();
+                }
+            } else {
+                updateUIForLoggedOutUser();
+                showLanding();
             }
         });
 
-        // Global functions for navigation
-        function showDashboard(userType) {
-            document.body.scrollTop = 0;
-            document.documentElement.scrollTop = 0;
+        function checkSession() {
+            const user = localStorage.getItem('currentUser');
+            const sessionId = localStorage.getItem('sessionId');
             
-            // Hide all pages first
-            document.getElementById('studentDashboardPage').style.display = 'none';
-            document.getElementById('teacherDashboardPage').style.display = 'none';
-            document.querySelectorAll('nav.navbar, section, footer').forEach(e => e.style.display = 'none');
-            
-            // Show appropriate dashboard
-            if (userType === 'student') {
-                document.getElementById('studentDashboardPage').style.display = 'block';
-            } else if (userType === 'teacher') {
-                document.getElementById('teacherDashboardPage').style.display = 'block';
+            if (user && sessionId) {
+                AppState.currentUser = JSON.parse(user);
+                AppState.currentSessionId = sessionId;
+                updateUIForLoggedInUser();
+                
+                // Only show dashboard if we're not already on it
+                if (sessionStorage.getItem('currentPage') !== 'dashboard') {
+                    showDashboard();
+                }
+            } else {
+                updateUIForLoggedOutUser();
+                showLanding();
             }
         }
 
-        function switchToTeacherView() {
-            localStorage.setItem('userType', 'teacher');
-            showDashboard('teacher');
-        }
+        function showDashboard() {
+            if (!AppState.currentUser) {
+                setPageState('landing');
+                return;
+            }
 
-        function switchToStudentView() {
-            localStorage.setItem('userType', 'student');
-            showDashboard('student');
+            // First set the page state
+            setPageState('dashboard');
+
+            // Then show appropriate dashboard based on user type
+            const studentDashboard = document.getElementById('studentDashboardPage');
+            const teacherDashboard = document.getElementById('teacherDashboardPage');
+
+            if (AppState.currentUser.userType === 'teacher') {
+                if (teacherDashboard) {
+                    teacherDashboard.style.display = 'block';
+                    loadTeacherData();
+                }
+            } else {
+                if (studentDashboard) {
+                    studentDashboard.style.display = 'block';
+                    loadStudentData();
+                }
+            }
         }
 
         function showLanding() {
-            document.getElementById('studentDashboardPage').style.display = 'none';
-            document.getElementById('teacherDashboardPage').style.display = 'none';
-            document.querySelectorAll('nav.navbar, section, footer').forEach(e => e.style.display = '');
+            setPageState('landing');
         }
 
-        function signOut() {
-            showLanding();
+        // Add these functions to handle dashboard data loading
+        async function loadStudentData() {
+            try {
+                const response = await fetch('http://localhost:3000/api/reports/student/' + AppState.currentUser.userId, {
+                    headers: {
+                        'session-id': AppState.currentSessionId
+                    }
+                });
+                
+                if (!response.ok) {
+                    throw new Error('Failed to load student data');
+                }
+                
+                const data = await response.json();
+                
+                // Update student dashboard with real data
+                document.getElementById('studentUserName').textContent = AppState.currentUser.firstName;
+                // Add more data updates here as needed
+                
+            } catch (error) {
+                console.error('Error loading student data:', error);
+                showError('Failed to load student dashboard data');
+            }
         }
+
+        async function loadTeacherData() {
+            try {
+                const response = await fetch(`${API_BASE_URL}/courses`, {
+                    headers: {
+                        'session-id': AppState.currentSessionId
+                    }
+                });
+                
+                if (!response.ok) {
+                    throw new Error('Failed to load teacher data');
+                }
+                
+                const courses = await response.json();
+                
+                // Update teacher dashboard with real data
+                document.getElementById('teacherUserName').textContent = AppState.currentUser.firstName;
+                
+                // Update courses table
+                const coursesTableBody = document.getElementById('coursesTableBody');
+                coursesTableBody.innerHTML = '';
+                
+                if (courses.length === 0) {
+                    coursesTableBody.innerHTML = `
+                        <tr>
+                            <td colspan="7" class="text-center">No courses found. Create your first course!</td>
+                        </tr>
+                    `;
+                } else {
+                    courses.forEach(course => {
+                        const row = document.createElement('tr');
+                        row.innerHTML = `
+                            <td>${course.course_name}</td>
+                            <td>${course.course_number}</td>
+                            <td>${course.course_section}</td>
+                            <td>${course.course_term}</td>
+                            <td>${new Date(course.start_date).toLocaleDateString()}</td>
+                            <td>${new Date(course.end_date).toLocaleDateString()}</td>
+                            <td>
+                                <button class="btn btn-sm btn-danger" onclick="deleteCourse('${course.course_id}')">Delete</button>
+                            </td>
+                        `;
+                        coursesTableBody.appendChild(row);
+                    });
+                }
+
+                // Update overview counts
+                document.getElementById('activeCoursesCount').textContent = courses.length;
+                
+                // TODO: Update other counts when we implement those features
+                document.getElementById('totalStudentsCount').textContent = '0';
+                document.getElementById('pendingReviewsCount').textContent = '0';
+                document.getElementById('completedReviewsCount').textContent = '0';
+                
+            } catch (error) {
+                console.error('Error loading teacher data:', error);
+                showError('Failed to load teacher dashboard data');
+            }
+        }
+
+        // Add this function to handle course deletion
+        async function deleteCourse(courseId) {
+            try {
+                // Show confirmation dialog
+                const result = await Swal.fire({
+                    title: 'Are you sure?',
+                    text: "You won't be able to revert this!",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Yes, delete it!'
+                });
+
+                if (!result.isConfirmed) {
+                    return;
+                }
+
+                // Store current scroll position
+                const currentScroll = window.scrollY;
+
+                const response = await fetch(`${API_BASE_URL}/courses/${courseId}`, {
+                    method: 'DELETE',
+                    headers: {
+                        'session-id': AppState.currentSessionId
+                    }
+                });
+
+                if (!response.ok) {
+                    throw new Error('Failed to delete course');
+                }
+
+                showSuccess('Course deleted successfully');
+                
+                // Refresh the course list and restore scroll position
+                await loadTeacherData();
+                window.scrollTo(0, currentScroll);
+            } catch (error) {
+                showError(error.message);
+            }
+        }
+
+        async function signOut() {
+            try {
+                const response = await fetch(`${API_BASE_URL}/auth/logout`, {
+                    method: 'POST',
+                    headers: {
+                        'session-id': AppState.currentSessionId
+                    }
+                });
+
+                if (!response.ok) {
+                    throw new Error('Logout failed');
+                }
+
+                // Clear local state
+                AppState.currentUser = null;
+                AppState.currentSessionId = null;
+                localStorage.removeItem('currentUser');
+                localStorage.removeItem('sessionId');
+                
+                // Update UI without refreshing
+                updateUIForLoggedOutUser();
+                showLanding();
+            } catch (error) {
+                showError(error.message);
+            }
+        }
+
+        function updateUIForLoggedInUser() {
+            document.getElementById('authButtons').style.display = 'none';
+            document.getElementById('userButtons').style.display = 'block';
+            document.getElementById('userName').textContent = AppState.currentUser.firstName;
+        }
+
+        function updateUIForLoggedOutUser() {
+            document.getElementById('authButtons').style.display = 'block';
+            document.getElementById('userButtons').style.display = 'none';
+            AppState.currentUser = null;
+            AppState.currentSessionId = null;
+        }
+
+        // Add CSS for smooth transitions
+        const style = document.createElement('style');
+        style.textContent = `
+            .page-content {
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 100%;
+                min-height: 100vh;
+                transition: opacity 0.3s ease-in-out;
+                opacity: 0;
+                pointer-events: none;
+                margin-top: 4rem;
+            }
+
+            .page-content.active {
+                opacity: 1;
+                pointer-events: auto;
+            }
+
+            .navbar {
+                z-index: 1000;
+            }
+        `;
+        document.head.appendChild(style);
+
+        // Update the navigation functions
+        function setPageState(page) {
+            // Update state
+            AppState.currentPage = page;
+            sessionStorage.setItem('currentPage', page);
+
+            // Get all page elements
+            const pages = document.querySelectorAll('.page-content');
+
+            // Hide all pages first
+            pages.forEach(page => {
+                page.style.display = 'none';
+                page.classList.remove('active');
+            });
+
+            // Show the target page
+            const targetPage = document.getElementById(`${page}Content`);
+            if (targetPage) {
+                targetPage.style.display = 'block';
+                targetPage.classList.add('active');
+            }
+
+            // Update navigation items
+            const landingNavItems = document.querySelectorAll('#landingNavItems');
+            landingNavItems.forEach(item => {
+                item.style.display = page === 'landing' ? 'block' : 'none';
+            });
+
+            // Scroll to top
+            window.scrollTo(0, 0);
+        }
+
+        // Add this function to handle smooth scrolling
+        function scrollToSection(sectionId) {
+            const section = document.getElementById(sectionId);
+            if (section) {
+                section.scrollIntoView({ behavior: 'smooth' });
+            }
+        }
+
+        // Add event listener for create course button
+        document.getElementById('createCourseBtn').addEventListener('click', async function() {
+            try {
+                const courseData = {
+                    courseName: document.getElementById('courseName').value,
+                    courseNumber: document.getElementById('courseNumber').value,
+                    courseSection: document.getElementById('courseSection').value,
+                    courseTerm: document.getElementById('courseTerm').value,
+                    startDate: document.getElementById('startDate').value,
+                    endDate: document.getElementById('endDate').value
+                };
+
+                const response = await fetch(`${API_BASE_URL}/courses`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'session-id': AppState.currentSessionId
+                    },
+                    body: JSON.stringify(courseData)
+                });
+
+                if (!response.ok) {
+                    throw new Error('Failed to create course');
+                }
+
+                // Close modal and refresh courses
+                $('#createCourseModal').modal('hide');
+                showSuccess('Course created successfully');
+                loadTeacherData();
+            } catch (error) {
+                showError(error.message);
+            }
+        });
     </script>
 </body>
 </html>

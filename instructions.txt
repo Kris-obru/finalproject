@@ -1,0 +1,85 @@
+Client Wishlist and Requirements
+Site-wide Experience
+ Static landing page
+o Informational page about the site
+Instructor Experience
+ Register an account
+o Name (first and last)
+o Email Address (verify .edu, maybe?)
+ Sign into account
+o Email/Password
+o MFA (?, see additional ideas)
+o Password reset ability
+ Sign out
+ Experience
+o Create courses
+o Load students to courses or send code to allow students to ‘enroll’ in course
+o Create teams
+o Create reviews
+ CRUD questions for the review
+ Question types: Likert, multiple choice, or short answer
+o Schedule reviews
+o Review reviews
+ Private review
+ Public review
+o Reports
+ Student average (converted to 100pt scale)
+ Sortable
+ Class metrics
+Student Experience
+ Register an account
+o Name
+o Email Address
+o Contact details
+ Mobile
+ Discord
+ Teams
+ Sign into account
+o Email/Password
+o MFA (?, see additional ideas)
+o Password reset ability
+ Sign out
+ Experience
+o Complete pending reviews
+o Reviews should have both public and private feedback options
+o Review score
+o Review public feedback from peers
+o Reports
+ Combined feedback
+ Overall scores
+Constraints
+ Email addresses must be valid
+ Passwords must be complex NIST compliance
+ Data must be stored in relational database
+ Must use technology covered in class
+o HTML
+o CSS
+ CSS libraries are encouraged including Bootstrap or Tailwind
+o Javascript
+ jQuery is okay, but not preferred
+ Frontend frameworks are allowed but only if we get to that portion of the
+material in class
+
+o Backend must use nodeJS and express
+ Code should be organized similar to the charts example
+ Must be a single page application (SPA)
+ Must include manifest for ‘Add to Home Screen’ capability
+ Must use Github repository w/ branching
+ Must meet accessibility standards
+ Passwords can NOT be stored in plain text in database
+ Secure backend routing
+ Must be responsively designed to look appropriate on mobile or desktop devices while
+being mobile first.
+Additional ideas
+ Host the application on GCP
+o Custom URL or DuckDNS URL
+o HTTPS
+ CI/CD Pipelines
+o Automated testing with Github Actions
+o Webhook integration for automatic deployments
+ Multi-factor authentication
+o Using a TOTP or email or SMS
+ Passport.js may help
+ Integrate with MariaDB or Postgres
+ Use of JS libraries to improve professionalism of application
+ Include an automated application walk through (IntroJS)
