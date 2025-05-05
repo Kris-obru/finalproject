@@ -1175,16 +1175,20 @@
         const currentPage = sessionStorage.getItem('currentPage');
         
         if (user && sessionId) {
+            console.log('Found user and sessionId in localStorage:', user, sessionId);
             // Verify the session is still valid
             verifySession(sessionId)
                 .then(valid => {
+                    console.log('verifySession result:', valid);
                     if (valid) {
                         AppState.currentUser = JSON.parse(user);
                         AppState.currentSessionId = sessionId;
                         updateUIForLoggedInUser();
-                        
-                        if (currentPage === 'dashboard') {
-                            showDashboard();
+                        // Restore correct dashboard page
+                        if (currentPage === 'teacherDashboard' || currentPage === 'studentDashboard') {
+                            setPageState(currentPage);
+                            if (currentPage === 'teacherDashboard') loadTeacherData();
+                            if (currentPage === 'studentDashboard') loadStudentData();
                         } else {
                             showLanding();
                         }
@@ -1198,6 +1202,7 @@
                     handleSessionExpiration();
                 });
         } else {
+            console.log('No user/sessionId in localStorage');
             updateUIForLoggedOutUser();
             showLanding();
         }
@@ -1271,7 +1276,8 @@
         }
     }
 
-    function showDashboard() {
+    function showDashboard(event) {
+        if (event) event.preventDefault();
         if (!AppState.currentUser) {
             setPageState('landing');
             return;
@@ -1284,24 +1290,15 @@
                     handleSessionExpiration();
                     return;
                 }
-                
-                // First set the page state
-                setPageState('dashboard');
-
-                // Then show appropriate dashboard based on user type
-                const studentDashboard = document.getElementById('studentDashboardPage');
-                const teacherDashboard = document.getElementById('teacherDashboardPage');
-
+                // Set the appropriate page state based on user type
                 if (AppState.currentUser.userType === 'teacher') {
-                    if (teacherDashboard) {
-                        teacherDashboard.style.display = 'block';
-                        loadTeacherData();
-                    }
+                    setPageState('teacherDashboard');
+                    sessionStorage.setItem('currentPage', 'teacherDashboard');
+                    loadTeacherData();
                 } else {
-                    if (studentDashboard) {
-                        studentDashboard.style.display = 'block';
-                        loadStudentData();
-                    }
+                    setPageState('studentDashboard');
+                    sessionStorage.setItem('currentPage', 'studentDashboard');
+                    loadStudentData();
                 }
             })
             .catch(err => {
@@ -1310,8 +1307,10 @@
             });
     }
 
-    function showLanding() {
+    function showLanding(event) {
+        if (event) event.preventDefault();
         setPageState('landing');
+        sessionStorage.setItem('currentPage', 'landing');
     }
 
     // Add these functions to handle dashboard data loading
