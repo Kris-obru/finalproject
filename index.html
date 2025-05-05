@@ -267,9 +267,10 @@
                         <!-- Student Reviews Tab -->
                         <div class="tab-pane fade" id="student-reviews" role="tabpanel">
                             <h3>Reviews</h3>
+                            <!-- Peer Feedback Section (existing) -->
                             <div class="card mb-4">
                                 <div class="card-header bg-warning text-white">
-                                    <h5 class="card-title mb-0">Pending Reviews</h5>
+                                    <h5 class="card-title mb-0">Pending Peer Feedback</h5>
                                 </div>
                                 <div class="card-body">
                                     <div class="list-group">
@@ -289,7 +290,7 @@
                             </div>
                             <div class="card">
                                 <div class="card-header bg-success text-white">
-                                    <h5 class="card-title mb-0">Completed Reviews</h5>
+                                    <h5 class="card-title mb-0">Completed Peer Feedback</h5>
                                 </div>
                                 <div class="card-body">
                                     <div class="list-group">
@@ -305,6 +306,27 @@
                                             </div>
                                         </a>
                                     </div>
+                                </div>
+                            </div>
+                            <!-- New Instructor Reviews Section -->
+                            <div class="card mt-4">
+                                <div class="card-header bg-primary text-white">
+                                    <h5 class="card-title mb-0">Instructor Reviews</h5>
+                                </div>
+                                <div class="card-body">
+                                    <table class="table" id="instructorReviewsTable">
+                                        <thead>
+                                            <tr>
+                                                <th>Review Name</th>
+                                                <th>Course</th>
+                                                <th>Due Date</th>
+                                                <th>Action</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="instructorReviewsTableBody">
+                                            <!-- Filled by JS -->
+                                        </tbody>
+                                    </table>
                                 </div>
                             </div>
                         </div>
@@ -2319,6 +2341,69 @@
             });
         }
     });
+
+    // Add JS to load instructor reviews for the student
+    async function loadInstructorReviews() {
+        const table = document.getElementById('instructorReviewsTableBody');
+        if (!table) return;
+        table.innerHTML = '<tr><td colspan="4">Loading...</td></tr>';
+        try {
+            const response = await fetch(`${API_BASE_URL}/assessments/student/${AppState.currentUser.userId}`, {
+                headers: { 'session-id': AppState.currentSessionId }
+            });
+            const reviews = await response.json();
+            table.innerHTML = '';
+            if (!reviews.length) {
+                table.innerHTML = '<tr><td colspan="4">No instructor reviews assigned.</td></tr>';
+                return;
+            }
+            reviews.forEach(review => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${review.name}</td>
+                    <td>${review.course_number} - ${review.course_name}</td>
+                    <td>${new Date(review.end_time).toLocaleDateString()}</td>
+                    <td><button class="btn btn-info btn-sm" onclick="openStudentReview('${review.assessment_id}')">View Review</button></td>
+                `;
+                table.appendChild(row);
+            });
+        } catch (err) {
+            table.innerHTML = '<tr><td colspan="4" class="text-danger">Error loading instructor reviews.</td></tr>';
+        }
+    }
+
+    // Call loadInstructorReviews() when loading the student dashboard
+    async function loadStudentData() {
+        try {
+            const response = await fetch(`http://localhost:3000/api/enrollments/${AppState.currentUser.userId}`, {
+                headers: {
+                    'session-id': AppState.currentSessionId
+                }
+            });
+            if (!response.ok) {
+                throw new Error('Failed to load student data');
+            }
+            const data = await response.json();
+            document.getElementById('studentUserName').textContent = AppState.currentUser.firstName;
+            const tableBody = document.querySelector('#student-courses tbody');
+            tableBody.innerHTML = '';
+            data.forEach(course => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${course.course_name}</td>
+                    <td>${course.course_number}</td>
+                    <td>${course.course_section}</td>
+                    <td>${course.instructor || 'N/A'}</td>
+                `;
+                tableBody.appendChild(row);
+            });
+            // Load instructor reviews as well
+            await loadInstructorReviews();
+        } catch (error) {
+            console.error('Error loading student data:', error);
+            showError('Failed to load student dashboard data');
+        }
+    }
 </script>
 
 <script>
