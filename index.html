@@ -965,7 +965,7 @@
         // Add these functions to handle dashboard data loading
         async function loadStudentData() {
             try {
-                const response = await fetch('http://localhost:3000/api/reports/student/' + AppState.currentUser.userId, {
+                const response = await fetch(`http://localhost:3000/api/enrollments/${AppState.currentUser.userId}`, {
                     headers: {
                         'session-id': AppState.currentSessionId
                     }
@@ -980,6 +980,19 @@
                 // Update student dashboard with real data
                 document.getElementById('studentUserName').textContent = AppState.currentUser.firstName;
                 // Add more data updates here as needed
+                const tableBody = document.querySelector('#student-courses tbody');
+                tableBody.innerHTML = ''; // Clear old rows
+                data.forEach(course => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td>${course.course_name}</td>
+                        <td>${course.course_number}</td>
+                        <td>${course.course_section}</td>
+                        <td>${course.instructor || 'N/A'}</td>
+                    `;
+                    tableBody.appendChild(row);
+                });
+
                 
             } catch (error) {
                 console.error('Error loading student data:', error);
@@ -1239,7 +1252,7 @@
             }
 
             try {
-            const response = await fetch(`${API_BASE_URL}/enroll`, {
+            const response = await fetch(`${API_BASE_URL}/enrollments`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

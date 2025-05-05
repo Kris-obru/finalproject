@@ -383,7 +383,7 @@ app.delete('/api/courses/:courseId', authenticateUser, (req, res) => {
 });
 
 // Enroll routes
-app.post('/api/enroll', authenticateUser, [
+app.post('/api/enrollments', authenticateUser, [
     body('courseId').notEmpty(),
 ], (req, res) => {
     const errors = validationResult(req);
@@ -410,6 +410,23 @@ app.post('/api/enroll', authenticateUser, [
         });
     });
     
+})
+
+app.get('/api/enrollments/:userId', authenticateUser, (req, res) => {
+    const { userId } = req.params 
+
+    db.all(`
+        SELECT c.course_name, c.course_number, c.course_section, c.course_term
+        FROM tbl_enrollments e
+        JOIN tbl_courses c ON e.course_id = c.course_id
+        WHERE e.user_id = ?
+        `, [userId], (err, rows) => {
+            if (err) {
+                console.error('Error fetching enrollments:', err);
+                return res.status(500).json({ error: 'Error fetching enrollments' });
+            }
+            res.json(rows);
+    })
 })
 
 // Team routes
