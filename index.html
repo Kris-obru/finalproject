@@ -397,6 +397,7 @@
                                                     <th>Term</th>
                                                     <th>Start Date</th>
                                                     <th>End Date</th>
+                                                    <th>Course Code</th>
                                                     <th>Actions</th>
                                                 </tr>
                                             </thead>
@@ -1458,6 +1459,7 @@
                         <td>${course.course_term}</td>
                         <td>${new Date(course.start_date).toLocaleDateString()}</td>
                         <td>${new Date(course.end_date).toLocaleDateString()}</td>
+                        <td>${course.course_id}</td>
                         <td>
                             <button class="btn btn-sm btn-danger" onclick="deleteCourse('${course.course_id}')">Delete</button>
                         </td>
