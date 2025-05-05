@@ -204,10 +204,10 @@
                             <h3>Welcome, <span id="studentUserName">Student</span>!</h3>
                             <p>This is your student dashboard. Use the tabs to manage your courses, teams, and reviews.</p>
                             <ul class="list-group mb-3">
-                                <li class="list-group-item d-flex justify-content-between align-items-center">Courses Enrolled <span class="badge badge-primary badge-pill">2</span></li>
-                                <li class="list-group-item d-flex justify-content-between align-items-center">Teams <span class="badge badge-success badge-pill">1</span></li>
-                                <li class="list-group-item d-flex justify-content-between align-items-center">Pending Reviews <span class="badge badge-warning badge-pill">1</span></li>
-                                <li class="list-group-item d-flex justify-content-between align-items-center">Completed Reviews <span class="badge badge-info badge-pill">3</span></li>
+                                <li class="list-group-item d-flex justify-content-between align-items-center">Courses Enrolled <span class="badge badge-primary badge-pill" id="enrolledCoursesCount">0</span></li>
+                                <li class="list-group-item d-flex justify-content-between align-items-center">Teams <span class="badge badge-success badge-pill" id="teamsCount">0</span></li>
+                                <li class="list-group-item d-flex justify-content-between align-items-center">Pending Reviews <span class="badge badge-warning badge-pill" id="pendingReviewsCount">0</span></li>
+                                <li class="list-group-item d-flex justify-content-between align-items-center">Completed Reviews <span class="badge badge-info badge-pill" id="completedReviewsCount">0</span></li>
                             </ul>
                         </div>
                         <!-- Student Courses Tab -->
@@ -1339,10 +1339,8 @@
     // Add these functions to handle dashboard data loading
     async function loadStudentData() {
         try {
-            const response = await fetch(`http://localhost:3000/api/enrollments/${AppState.currentUser.userId}`, {
-                headers: {
-                    'session-id': AppState.currentSessionId
-                }
+            const response = await fetch(`${API_BASE_URL}/student/dashboard`, {
+                credentials: 'include'
             });
             
             if (!response.ok) {
@@ -1351,28 +1349,42 @@
             
             const data = await response.json();
             
-            // Update student dashboard with real data
-            document.getElementById('studentUserName').textContent = AppState.currentUser.firstName;
-            // Add more data updates here as needed
-            const tableBody = document.querySelector('#student-courses tbody');
-            tableBody.innerHTML = ''; // Clear old rows
-            data.forEach(course => {
-                const row = document.createElement('tr');
-                row.innerHTML = `
-                    <td>${course.course_name}</td>
-                    <td>${course.course_number}</td>
-                    <td>${course.course_section}</td>
-                    <td>${course.instructor || 'N/A'}</td>
-                `;
-                tableBody.appendChild(row);
-            });
-
-            // Load student teams
+            // Update student name
+            document.getElementById('studentUserName').textContent = data.user.name;
+            
+            // Update dashboard counts
+            document.getElementById('enrolledCoursesCount').textContent = data.courses.length;
+            document.getElementById('teamsCount').textContent = data.teams ? data.teams.length : 0;
+            
+            // Count pending and completed reviews
+            let pendingReviews = 0;
+            let completedReviews = 0;
+            
+            if (data.reviews) {
+                data.reviews.forEach(review => {
+                    if (review.status === 'pending') {
+                        pendingReviews++;
+                    } else if (review.status === 'completed') {
+                        completedReviews++;
+                    }
+                });
+            }
+            
+            document.getElementById('pendingReviewsCount').textContent = pendingReviews;
+            document.getElementById('completedReviewsCount').textContent = completedReviews;
+            
+            // Load courses
+            await loadStudentCourses();
+            
+            // Load teams
             await loadStudentTeams();
+            
+            // Load reviews
+            await loadStudentReviews();
             
         } catch (error) {
             console.error('Error loading student data:', error);
-            showError('Failed to load student dashboard data');
+            showError('Failed to load student data');
         }
     }
 

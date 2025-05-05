@@ -5,6 +5,7 @@ const bcrypt = require('bcrypt');
 const cors = require('cors');
 const { v4: uuidv4 } = require('uuid');
 const { body, validationResult } = require('express-validator');
+const fs = require('fs');
 
 const app = express();
 const HTTP_PORT = process.env.PORT || 3000;
@@ -38,18 +39,34 @@ app.use(express.urlencoded({ extended: true }));
 // Database setup
 let db;
 try {
-    db = new sqlite3.Database('./database.db', (err) => {
+    const dbPath = path.join(__dirname, 'database.db');
+    console.log('Attempting to connect to database at:', dbPath);
+    
+    // Read the SQL schema file
+    const schemaPath = path.join(__dirname, 'dbquery.sql');
+    const schema = fs.readFileSync(schemaPath, 'utf8');
+    
+    db = new sqlite3.Database(dbPath, (err) => {
         if (err) {
             console.error('Error opening database:', err);
             console.log('Server will continue running but database operations will fail');
         } else {
             console.log('Connected to SQLite database');
-            // Verify tables exist
-            db.all("SELECT name FROM sqlite_master WHERE type='table'", (err, tables) => {
+            
+            // Create tables if they don't exist
+            db.exec(schema, (err) => {
                 if (err) {
-                    console.error('Error checking tables:', err);
+                    console.error('Error creating tables:', err);
                 } else {
-                    console.log('Available tables:', tables.map(t => t.name));
+                    console.log('Database tables verified/created successfully');
+                    // Verify tables exist
+                    db.all("SELECT name FROM sqlite_master WHERE type='table'", (err, tables) => {
+                        if (err) {
+                            console.error('Error checking tables:', err);
+                        } else {
+                            console.log('Available tables:', tables.map(t => t.name));
+                        }
+                    });
                 }
             });
         }
