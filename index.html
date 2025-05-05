@@ -18,12 +18,6 @@
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ml-auto">
-                    <li class="nav-item" id="landingNavItems">
-                        <a class="nav-link" href="#" onclick="event.preventDefault(); scrollToSection('features')">Features</a>
-                    </li>
-                    <li class="nav-item" id="landingNavItems">
-                        <a class="nav-link" href="#" onclick="event.preventDefault(); scrollToSection('contact')">Contact</a>
-                    </li>
                     <li class="nav-item" id="authButtons">
                         <button class="btn btn-primary ml-2" onclick="showAuthModal()">Sign In</button>
                     </li>
@@ -55,7 +49,7 @@
                             <p class="lead mb-4">A modern solution for university learning. Manage assignments, create teams, and collaborate effectively.</p>
                             <div class="d-flex flex-column flex-sm-row">
                                 <a href="#" class="btn btn-light btn-lg mb-2 mb-sm-0 mr-sm-3" onclick="showAuthModal(true)">Get Started</a>
-                                <a href="#" class="btn btn-outline-light btn-lg">Learn More</a>
+                                <a href="#" class="btn btn-outline-light btn-lg" onclick="event.preventDefault(); scrollToSection('about');">Learn More</a>
                             </div>
                         </div>
                         <div class="col-lg-6">
@@ -64,12 +58,133 @@
                     </div>
                 </div>
             </section>
+
+            <!-- Add Key Benefits Section -->
+            <section class="py-5 bg-light">
+                <div class="container px-4">
+                    <h2 class="text-center mb-5">Why Choose iLearn?</h2>
+                    <div class="row text-center">
+                        <div class="col-md-4 mb-4">
+                            <div class="card h-100 border-0 shadow-sm">
+                                <div class="card-body">
+                                    <div class="icon-circle bg-primary text-white mx-auto mb-3">
+                                        <i class="fas fa-users fa-2x"></i>
+                                    </div>
+                                    <h4 class="card-title">Enhanced Collaboration</h4>
+                                    <p class="card-text">Easily form teams, manage group projects, and provide structured peer feedback.</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4 mb-4">
+                            <div class="card h-100 border-0 shadow-sm">
+                                <div class="card-body">
+                                    <div class="icon-circle bg-success text-white mx-auto mb-3">
+                                        <i class="fas fa-tasks fa-2x"></i>
+                                    </div>
+                                    <h4 class="card-title">Streamlined Workflow</h4>
+                                    <p class="card-text">Centralize assignments, reviews, and communication for students and instructors.</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4 mb-4">
+                           <div class="card h-100 border-0 shadow-sm">
+                                <div class="card-body">
+                                    <div class="icon-circle bg-info text-white mx-auto mb-3">
+                                         <i class="fas fa-chart-line fa-2x"></i>
+                                    </div>
+                                    <h4 class="card-title">Actionable Insights</h4>
+                                    <p class="card-text">Generate reports on team performance and individual contributions.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            <!-- End Key Benefits Section -->
+
+            <!-- Add About Section -->
+            <section id="about" class="py-5">
+                <div class="container px-4">
+                    <h2 class="text-center mb-4">Learn More About iLearn</h2>
+                    <div class="row">
+                        <div class="col-md-8 mx-auto text-center">
+                            <p class="lead">iLearn provides a comprehensive platform for managing university coursework, facilitating collaboration among students and instructors. Track assignments, form teams, conduct peer reviews, and gain insights into performance, all in one place.</p>
+                            <p>Our goal is to streamline the learning process and enhance educational outcomes through technology.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Add Features Section -->
+            <section id="features" class="py-5 bg-light">
+                 <div class="container px-4">
+                      <h2 class="text-center mb-5">Core Features</h2>
+                      <div class="row">
+                          <div class="col-md-6 col-lg-3 mb-4 text-center">
+                              <div class="mb-3"><i class="fas fa-users-cog fa-3x text-primary"></i></div>
+                              <h5>Team Management</h5>
+                              <p class="text-muted">Instructors can easily create and manage student teams for projects and assignments.</p>
+                          </div>
+                          <div class="col-md-6 col-lg-3 mb-4 text-center">
+                              <div class="mb-3"><i class="fas fa-comments fa-3x text-success"></i></div>
+                              <h5>Peer Review System</h5>
+                              <p class="text-muted">Facilitate constructive feedback with customizable peer review templates and workflows.</p>
+                          </div>
+                          <div class="col-md-6 col-lg-3 mb-4 text-center">
+                              <div class="mb-3"><i class="fas fa-file-alt fa-3x text-info"></i></div>
+                              <h5>Assignment Tracking</h5>
+                              <p class="text-muted">Students and instructors can track assignment submissions and review status.</p>
+                          </div>
+                          <div class="col-md-6 col-lg-3 mb-4 text-center">
+                              <div class="mb-3"><i class="fas fa-chart-pie fa-3x text-warning"></i></div>
+                              <h5>Performance Reports</h5>
+                              <p class="text-muted">Generate insightful reports on team dynamics and individual contributions based on reviews.</p>
+                          </div>
+                      </div>
+                 </div>
+            </section>
+
+             <!-- Add Contact Section -->
+            <section id="contact" class="py-5">
+                 <div class="container px-4">
+                      <h2 class="text-center mb-4">Contact Us</h2>
+                       <div class="row">
+                           <div class="col-md-8 mx-auto">
+                               <p class="text-center mb-4">Have questions or feedback? Fill out the form below and we'll get back to you.</p>
+                               <form id="contactForm">
+                                   <div class="form-row">
+                                       <div class="form-group col-md-6">
+                                           <label for="contactName">Name</label>
+                                           <input type="text" class="form-control" id="contactName" placeholder="Your Name" required>
+                                       </div>
+                                       <div class="form-group col-md-6">
+                                           <label for="contactEmail">Email</label>
+                                           <input type="email" class="form-control" id="contactEmail" placeholder="Your Email" required>
+                                       </div>
+                                   </div>
+                                   <div class="form-group">
+                                       <label for="contactSubject">Subject</label>
+                                       <input type="text" class="form-control" id="contactSubject" placeholder="Subject">
+                                   </div>
+                                   <div class="form-group">
+                                       <label for="contactMessage">Message</label>
+                                       <textarea class="form-control" id="contactMessage" rows="5" placeholder="Your Message" required></textarea>
+                                   </div>
+                                   <div class="text-center">
+                                       <button type="submit" class="btn btn-primary btn-lg">Send Message</button>
+                                   </div>
+                               </form>
+                           </div>
+                       </div>
+                 </div>
+            </section>
+
         </div>
 
         <!-- Dashboard Pages -->
-        <div id="dashboardContent" class="page-content" style="display: none;">
+        <div id="studentDashboardContent" class="page-content" style="display: none;">
             <!-- Student Dashboard -->
-            <div id="studentDashboardPage" style="display: none;">
+            <div id="studentDashboardPageContent">
                 <div class="container py-4" style="padding-top: 5rem;">
                     <div class="d-flex justify-content-between align-items-center mb-4">
                         <button class="btn btn-secondary" onclick="showLanding()">&larr; Back to Landing Page</button>
@@ -222,6 +337,7 @@
                                                     <p class="mb-1">"Excellent team player, always contributes valuable insights."</p>
                                                     <small>From: Team Alpha Review</small>
                                                 </div>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
@@ -233,7 +349,8 @@
             </div>
 
             <!-- Teacher Dashboard -->
-            <div id="teacherDashboardPage" style="display: none;">
+        <div id="teacherDashboardContent" class="page-content" style="display: none;">
+            <div id="teacherDashboardPageContent">
                 <div class="container py-4" style="padding-top: 5rem;">
                     <div class="d-flex justify-content-between align-items-center mb-4">
                         <button class="btn btn-secondary" onclick="showLanding()">&larr; Back to Landing Page</button>
@@ -663,7 +780,8 @@
             currentPage: 'landing',
             currentUser: null,
             currentSessionId: null,
-            isLoading: false
+            isLoading: false,
+            lastActiveTeacherTabId: 'teacher-overview-tab' // Initialize to default tab ID
         };
 
         // Global error handling functions
@@ -796,22 +914,27 @@
 
                 if (!validateEmail(email)) {
                     showError("Please enter a valid email address.");
+                    hideLoading();
                     return;
                 }
                 if (!validateEduEmail(email)) {
                     showError("Please use your university email address (.edu).");
+                    hideLoading();
                     return;
                 }
                 if (password.length < 6) {
                     showError("Your password needs to be at least 6 characters long.");
+                    hideLoading();
                     return;
                 }
                 if (password !== confirmPassword) {
                     showError("The passwords don't match. Please try again.");
+                    hideLoading();
                     return;
                 }
                 if (firstName.length < 1 || lastName.length < 1) {
                     showError("Please enter both your first and last name.");
+                    hideLoading();
                     return;
                 }
 
@@ -843,7 +966,7 @@
                     
                     $('#authModal').modal('hide');
                     updateUIForLoggedInUser();
-                    showDashboard();
+                    hideLoading();
                 } catch (error) {
                     hideLoading();
                     showError(error.message);
@@ -902,7 +1025,7 @@
                 AppState.currentSessionId = sessionId;
                 updateUIForLoggedInUser();
                 
-                if (currentPage === 'dashboard') {
+                if (currentPage === 'studentDashboard' || currentPage === 'teacherDashboard') {
                     showDashboard();
                 } else {
                     showLanding();
@@ -922,9 +1045,11 @@
                 AppState.currentSessionId = sessionId;
                 updateUIForLoggedInUser();
                 
-                // Only show dashboard if we're not already on it
-                if (sessionStorage.getItem('currentPage') !== 'dashboard') {
+                const currentPage = sessionStorage.getItem('currentPage');
+                if (currentPage === 'studentDashboard' || currentPage === 'teacherDashboard') {
                     showDashboard();
+                } else {
+                   showLanding();
                 }
             } else {
                 updateUIForLoggedOutUser();
@@ -938,23 +1063,14 @@
                 return;
             }
 
-            // First set the page state
-            setPageState('dashboard');
+            const targetPage = AppState.currentUser.userType === 'teacher' ? 'teacherDashboard' : 'studentDashboard';
 
-            // Then show appropriate dashboard based on user type
-            const studentDashboard = document.getElementById('studentDashboardPage');
-            const teacherDashboard = document.getElementById('teacherDashboardPage');
+            setPageState(targetPage);
 
-            if (AppState.currentUser.userType === 'teacher') {
-                if (teacherDashboard) {
-                    teacherDashboard.style.display = 'block';
+            if (targetPage === 'teacherDashboard') {
                     loadTeacherData();
-                }
             } else {
-                if (studentDashboard) {
-                    studentDashboard.style.display = 'block';
                     loadStudentData();
-                }
             }
         }
 
@@ -1083,6 +1199,11 @@
                 // Refresh the course list and restore scroll position
                 await loadTeacherData();
                 window.scrollTo(0, currentScroll);
+                
+                // Restore the last active tab based on stored state
+                if (AppState.lastActiveTeacherTabId) {
+                    $(`#${AppState.lastActiveTeacherTabId}`).click(); 
+                }
             } catch (error) {
                 showError(error.message);
             }
@@ -1164,16 +1285,18 @@
             const pages = document.querySelectorAll('.page-content');
 
             // Hide all pages first
-            pages.forEach(page => {
-                page.style.display = 'none';
-                page.classList.remove('active');
+            pages.forEach(p => {
+                p.style.display = 'none';
+                p.classList.remove('active');
             });
 
             // Show the target page
-            const targetPage = document.getElementById(`${page}Content`);
-            if (targetPage) {
-                targetPage.style.display = 'block';
-                targetPage.classList.add('active');
+            const targetPageElement = document.getElementById(`${page}Content`);
+            if (targetPageElement) {
+                targetPageElement.style.display = 'block';
+                setTimeout(() => {
+                    targetPageElement.classList.add('active');
+                }, 10);
             }
 
             // Update navigation items
@@ -1222,9 +1345,26 @@
                 // Close modal and refresh courses
                 $('#createCourseModal').modal('hide');
                 showSuccess('Course created successfully');
-                loadTeacherData();
+                
+                await loadTeacherData(); // Make sure data is loaded before potentially switching tab
             } catch (error) {
                 showError(error.message);
+            }
+        });
+
+        // Add event listener for createCourseModal hidden event
+        $('#createCourseModal').on('hidden.bs.modal', function () {
+            // Restore the last active tab based on stored state after modal is fully hidden
+             if (AppState.lastActiveTeacherTabId) {
+                $(`#${AppState.lastActiveTeacherTabId}`).click(); 
+            }
+        });
+
+        // Listen for tab changes to update AppState
+        $('#teacherTabs a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
+            if (e.target && e.target.id) {
+                AppState.lastActiveTeacherTabId = e.target.id;
+                // console.log("Active teacher tab set to:", AppState.lastActiveTeacherTabId); // For debugging
             }
         });
     </script>
