@@ -1,0 +1,32 @@
+{
+  "name": "finalproject",
+  "version": "1.0.0",
+  "description": "",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Kris-obru/finalproject.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/Kris-obru/finalproject/issues"
+  },
+  "homepage": "https://github.com/Kris-obru/finalproject#readme",
+  "dependencies": {
+    "bcrypt": "^5.1.1",
+    "cors": "^2.8.5",
+    "express": "^5.1.0",
+    "express-validator": "^7.2.1",
+    "path": "^0.12.7",
+    "sqlite3": "^5.1.7",
+    "uuid": "^11.1.0",
+    "uuidv4": "^6.2.13"
+  }
+}

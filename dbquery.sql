@@ -60,9 +60,10 @@ CREATE TABLE tbl_assessments (
   course_id     TEXT NOT NULL,
   user_id       TEXT NOT NULL,    -- creator/owner
   name          TEXT NOT NULL,
-  type          TEXT NOT NULL,  -- 'quiz','survey', etc.
+  type          TEXT NOT NULL,  -- 'quiz','survey', 'review', etc.
   status        TEXT NOT NULL CHECK(status IN ('pending','open','closed'))
                    DEFAULT 'pending',
+  visibility    TEXT NOT NULL CHECK(visibility IN ('public','private')) DEFAULT 'private',
   start_time    DATETIME NOT NULL,
   end_time      DATETIME NOT NULL,
   FOREIGN KEY (course_id) REFERENCES tbl_courses(course_id)

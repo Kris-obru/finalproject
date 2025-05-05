@@ -27,9 +27,9 @@
                                 <i class="fas fa-user"></i> <span id="userName">Account</span>
                             </button>
                             <div class="dropdown-menu dropdown-menu-right" aria-labelledby="userDropdown">
-                                <a class="dropdown-item" href="#" onclick="event.preventDefault(); showDashboard();">Dashboard</a>
+                                <a class="dropdown-item" href="#" id="dashboardLink">Dashboard</a>
                                 <div class="dropdown-divider"></div>
-                                <button class="dropdown-item" type="button" onclick="signOut()">Sign Out</button>
+                                <button class="dropdown-item" type="button" id="signOutButton">Sign Out</button>
                             </div>
                         </div>
                     </li>
@@ -213,9 +213,9 @@
                         <div class="tab-pane fade" id="student-courses" role="tabpanel">
                             <h3>My Courses</h3>
                             <div class="input-group mb-3">
-                                <input type="text" class="form-control" placeholder="Enter course code to enroll">
+                                <input type="text" id="enrollCourseCode"class="form-control" placeholder="Enter course code to enroll">
                                 <div class="input-group-append">
-                                    <button class="btn btn-primary" type="button">Enroll</button>
+                                    <button class="btn btn-primary" id="btnEnrollCourse" type="button">Enroll</button>
                                 </div>
                             </div>
                             <table class="table table-bordered table-hover">
@@ -408,7 +408,7 @@
                                 <!-- Teacher Teams Tab -->
                                 <div class="tab-pane fade" id="teacher-teams" role="tabpanel">
                                     <h3>Course Teams</h3>
-                                    <button class="btn btn-primary mb-3" data-toggle="modal" data-target="#createTeamModal">Create Team</button>
+                                    <button type="button" class="btn btn-primary mb-3" data-toggle="modal" data-target="#createTeamModal">Create Team</button>
                                     <table class="table table-bordered table-hover">
                                         <thead class="thead-light">
                                             <tr>
@@ -417,12 +417,8 @@
                                                 <th>Members</th>
                                             </tr>
                                         </thead>
-                                        <tbody>
-                                            <tr>
-                                                <td>Team Alpha</td>
-                                                <td>CSCI101</td>
-                                                <td>Alice, Bob, Carol</td>
-                                            </tr>
+                                        <tbody id="teamsTableBody">
+                                            <!-- Teams will be loaded here -->
                                         </tbody>
                                     </table>
                                     <!-- Create Team Modal -->
@@ -436,28 +432,24 @@
                                                     </button>
                                                 </div>
                                                 <div class="modal-body">
-                                                    <form id="createTeamForm">
+                                                    <form id="createTeamForm" onsubmit="return false">
                                                         <div class="form-group">
                                                             <label>Team Name</label>
-                                                            <input type="text" class="form-control" required>
+                                                            <input type="text" id="teamName" class="form-control" required>
                                                         </div>
                                                         <div class="form-group">
                                                             <label>Course</label>
-                                                            <select class="form-control" required>
-                                                                <option>CSCI101 - Intro to Web Dev</option>
-                                                                <option>CSCI202 - Software Engineering</option>
+                                                            <select id="courseDropdown" class="form-control" required>
+                                                                <!-- Will autofill -->
                                                             </select>
                                                         </div>
                                                         <div class="form-group">
-                                                            <label>Select Members</label>
-                                                            <select class="form-control" multiple required>
-                                                                <option>Alice</option>
-                                                                <option>Bob</option>
-                                                                <option>Carol</option>
-                                                                <option>Dave</option>
+                                                            <label>Assign Students</label>
+                                                            <select id="selectStudents" class="form-control" multiple>
+                                                                <!-- Filled in later -->
                                                             </select>
                                                         </div>
-                                                        <button type="submit" class="btn btn-primary">Create</button>
+                                                        <button type="button" class="btn btn-primary" id="createTeamBtn">Create Team</button>
                                                     </form>
                                                 </div>
                                             </div>
@@ -483,7 +475,7 @@
                                                         <th>Status</th>
                                                     </tr>
                                                 </thead>
-                                                <tbody>
+                                                <tbody id="pendingReviewsTableBody">
                                                     <tr>
                                                         <td>Teamwork Feedback</td>
                                                         <td>CSCI101</td>
@@ -510,7 +502,7 @@
                                                         <th>Status</th>
                                                     </tr>
                                                 </thead>
-                                                <tbody>
+                                                <tbody id="completedReviewsTableBody">
                                                     <tr>
                                                         <td>Project Reflection</td>
                                                         <td>CSCI202</td>
@@ -533,14 +525,14 @@
                                                     </button>
                                                 </div>
                                                 <div class="modal-body">
-                                                    <form id="createReviewForm">
+                                                    <form id="createReviewForm" onsubmit="return false">
                                                         <div class="form-group">
                                                             <label>Review Name</label>
                                                             <input type="text" class="form-control" required>
                                                         </div>
                                                         <div class="form-group">
                                                             <label>Course</label>
-                                                            <select class="form-control" required>
+                                                            <select id="reviewCourseDropdown" class="form-control" required>
                                                                 <option>CSCI101 - Intro to Web Dev</option>
                                                                 <option>CSCI202 - Software Engineering</option>
                                                             </select>
@@ -556,20 +548,12 @@
                                                                 <option value="private">Private</option>
                                                             </select>
                                                         </div>
-                                                        <div class="form-group">
-                                                            <label>Question Type</label>
-                                                            <select class="form-control" required>
-                                                                <option>Likert Scale</option>
-                                                                <option>Multiple Choice</option>
-                                                                <option>Short Answer</option>
-                                                            </select>
+                                                        <!-- Static Question fields removed -->
+                                                        <div id="questionsContainer">
+                                                            <!-- Dynamic questions will be added here -->
                                                         </div>
-                                                        <div class="form-group">
-                                                            <label>Question</label>
-                                                            <input type="text" class="form-control" required>
-                                                        </div>
-                                                        <button type="button" class="btn btn-secondary" onclick="addQuestion()">Add Question</button>
-                                                        <button type="submit" class="btn btn-primary">Create Review</button>
+                                                        <button type="button" class="btn btn-secondary mb-3" onclick="addReviewQuestion()">Add Question</button>
+                                                        <button type="button" class="btn btn-primary" id="createReviewSubmitBtn">Create Review</button>
                                                     </form>
                                                 </div>
                                             </div>
@@ -593,7 +577,7 @@
                                                                 <th>Average</th>
                                                             </tr>
                                                         </thead>
-                                                        <tbody>
+                                                        <tbody id="studentAveragesTableBody">
                                                             <tr>
                                                                 <td>Alice</td>
                                                                 <td>92%</td>
@@ -656,7 +640,7 @@
                             </button>
                             
                             <!-- Login Form -->
-                            <form id="frmLogin">
+                            <form id="frmLogin" onsubmit="return false">
                                 <h1 class="text-center text-primary h2 mb-2">Welcome</h1>
                                 <h3 class="text-center h4 mb-4">Sign In</h3>
                                 <div class="form-group mb-3">
@@ -672,7 +656,7 @@
                             </form>
 
                             <!-- Registration Form -->
-                            <form id="frmRegister" style="display:none;">
+                            <form id="frmRegister" style="display:none;" onsubmit="return false">
                                 <h1 class="text-center text-primary h2 mb-2">Welcome</h1>
                                 <h3 class="text-center h4 mb-4">Create Your Account</h3>
                                 <div class="form-group mb-3">
@@ -728,7 +712,7 @@
                     </button>
                 </div>
                 <div class="modal-body">
-                    <form id="createCourseForm">
+                    <form id="createCourseForm" onsubmit="return false">
                         <div class="form-group">
                             <label for="courseName">Course Name</label>
                             <input type="text" class="form-control" id="courseName" required>
@@ -768,226 +752,130 @@
         </div>
     </div>
 
-    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.4.1/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- No jQuery - using vanilla JS instead -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        // Tab functionality in vanilla JS
+        function setupTabs() {
+            document.querySelectorAll('[data-toggle="tab"]').forEach(tabTrigger => {
+                tabTrigger.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    
+                    // Find the target tab
+                    const target = document.querySelector(this.getAttribute('href'));
+                    if (!target) return;
+                    
+                    // Find parent tab list
+                    const tabList = this.closest('.nav-tabs');
+                    if (!tabList) return;
+                    
+                    // Hide all tabs in the same group
+                    const tabContainer = target.closest('.tab-content');
+                    if (tabContainer) {
+                        const allTabs = tabContainer.querySelectorAll('.tab-pane');
+                        allTabs.forEach(tab => {
+                            tab.classList.remove('show', 'active');
+                        });
+                    }
+                    
+                    // Deactivate all tab triggers
+                    const allTabTriggers = tabList.querySelectorAll('.nav-link');
+                    allTabTriggers.forEach(tab => {
+                        tab.classList.remove('active');
+                    });
+                    
+                    // Activate the clicked tab and its content
+                    this.classList.add('active');
+                    target.classList.add('show', 'active');
+                });
+            });
+        }
+        
+        // Add a function to handle opening modals with data-toggle
+        function setupModals() {
+            const modalTriggers = document.querySelectorAll('[data-toggle="modal"]');
+            modalTriggers.forEach(trigger => {
+                trigger.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const targetModal = document.querySelector(this.getAttribute('data-target'));
+                    if (targetModal) {
+                        // Custom show modal function
+                        showModal(targetModal.id);
+                    }
+                });
+            });
+            
+            // Add click handlers for modal close buttons
+            const closeButtons = document.querySelectorAll('[data-dismiss="modal"]');
+            closeButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const modal = this.closest('.modal');
+                    closeModal(modal.id);
+                });
+            });
+        }
+        
+        function showModal(modalId) {
+            const modal = document.getElementById(modalId);
+            modal.classList.add('show');
+            modal.style.display = 'block';
+            
+            // Add backdrop
+            const backdrop = document.createElement('div');
+            backdrop.className = 'modal-backdrop fade show';
+            document.body.appendChild(backdrop);
+            document.body.classList.add('modal-open');
+            
+            // Trigger shown.bs.modal event
+            const event = new CustomEvent('shown.bs.modal');
+            modal.dispatchEvent(event);
+        }
+        
+        function closeModal(modalId) {
+            const modal = document.getElementById(modalId);
+            modal.classList.remove('show');
+            modal.style.display = 'none';
+            
+            // Remove backdrop
+            const backdrop = document.querySelector('.modal-backdrop');
+            if (backdrop) {
+                backdrop.parentNode.removeChild(backdrop);
+            }
+            document.body.classList.remove('modal-open');
+            
+            // Trigger hidden.bs.modal event
+            const event = new CustomEvent('hidden.bs.modal');
+            modal.dispatchEvent(event);
+        }
+        
+        // Run setup when DOM is ready
+        document.addEventListener('DOMContentLoaded', function() {
+            setupTabs();
+            setupModals();
+        });
+    </script>
     <script>
         // API base URL
         const API_BASE_URL = 'http://localhost:3000/api';
-
-        // Add state management
-        const AppState = {
-            currentPage: 'landing',
-            currentUser: null,
-            currentSessionId: null,
-            isLoading: false,
-            lastActiveTeacherTabId: 'teacher-overview-tab' // Initialize to default tab ID
-        };
-
-        // Global error handling functions
-        function showError(message) {
-            Swal.fire({
-                title: 'Error',
-                text: message,
-                icon: 'error'
-            });
-        }
-
-        function showSuccess(message) {
-            Swal.fire({
-                title: 'Success',
-                text: message,
-                icon: 'success'
-            });
-        }
-
-        // Add loading overlay to prevent flickering
-        const loadingOverlay = document.createElement('div');
-        loadingOverlay.id = 'loadingOverlay';
-        loadingOverlay.style.cssText = `
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: white;
-            z-index: 9999;
-            display: none;
-        `;
-        document.body.appendChild(loadingOverlay);
-
-        function showLoading() {
-            loadingOverlay.style.display = 'block';
-        }
-
-        function hideLoading() {
-            loadingOverlay.style.display = 'none';
-        }
-
-        // Function to show the auth modal
+    </script>
+    <script>
+        // Modal related functions for auth modal
         function showAuthModal(showRegister = false) {
-            // Show the modal
-            $('#authModal').modal('show');
+            // Show the modal using the vanilla JS modal function
+            showModal('authModal');
+            
             if (showRegister) {
-                $('#frmLogin').hide();
-                $('#frmRegister').show();
+                document.getElementById('frmLogin').style.display = 'none';
+                document.getElementById('frmRegister').style.display = 'block';
             } else {
-                $('#frmLogin').show();
-                $('#frmRegister').hide();
+                document.getElementById('frmLogin').style.display = 'block';
+                document.getElementById('frmRegister').style.display = 'none';
             }
         }
 
-        document.addEventListener('DOMContentLoaded', function() {
-            // Form elements
-            const loginForm = document.getElementById('frmLogin');
-            const registerForm = document.getElementById('frmRegister');
-            const btnLogin = document.getElementById('btnLogin');
-            const btnRegister = document.getElementById('btnRegister');
-            const btnSwapRegister = document.getElementById('btnSwapRegister');
-            const btnSwapLogin = document.getElementById('btnSwapLogin');
-            const authModal = document.getElementById('authModal');
-
-            // Input fields
-            const txtEmail = document.getElementById('txtEmail');
-            const txtPassword = document.getElementById('txtPassword');
-            const txtRegEmail = document.getElementById('txtRegEmail');
-            const txtRegPassword = document.getElementById('txtRegPassword');
-            const txtConfirmPassword = document.getElementById('txtConfirmPassword');
-            const txtFirstName = document.getElementById('txtFirstName');
-            const txtLastName = document.getElementById('txtLastName');
-
-            // Event Listeners
-            btnLogin.addEventListener('click', handleLogin);
-            btnRegister.addEventListener('click', handleRegister);
-            btnSwapRegister.addEventListener('click', () => swapForms(loginForm, registerForm));
-            btnSwapLogin.addEventListener('click', () => swapForms(registerForm, loginForm));
-
-            // Add event listener for sign out button
-            const signOutButton = document.querySelector('.dropdown-item[onclick*="signOut"]');
-            if (signOutButton) {
-                signOutButton.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    signOut();
-                });
-            }
-
-            // Functions
-            async function handleLogin() {
-                try {
-                    const response = await fetch(`${API_BASE_URL}/auth/login`, {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json'
-                        },
-                        body: JSON.stringify({ 
-                            email: txtEmail.value.trim(), 
-                            password: txtPassword.value.trim() 
-                        })
-                    });
-
-                    if (!response.ok) throw new Error('Login failed');
-
-                    const data = await response.json();
-                    AppState.currentUser = data.user;
-                    AppState.currentSessionId = data.sessionId;
-                    
-                    localStorage.setItem('currentUser', JSON.stringify(data.user));
-                    localStorage.setItem('sessionId', data.sessionId);
-                    
-                    $('#authModal').modal('hide');
-                    updateUIForLoggedInUser();
-                    showDashboard();
-                } catch (error) {
-                    showError(error.message);
-                }
-            }
-
-            async function handleRegister() {
-                showLoading();
-                const email = txtRegEmail.value.trim();
-                const password = txtRegPassword.value.trim();
-                const confirmPassword = txtConfirmPassword.value.trim();
-                const firstName = txtFirstName.value.trim();
-                const lastName = txtLastName.value.trim();
-                const userType = document.querySelector('input[name="userType"]:checked').value;
-
-                if (!validateEmail(email)) {
-                    showError("Please enter a valid email address.");
-                    hideLoading();
-                    return;
-                }
-                if (!validateEduEmail(email)) {
-                    showError("Please use your university email address (.edu).");
-                    hideLoading();
-                    return;
-                }
-                if (password.length < 6) {
-                    showError("Your password needs to be at least 6 characters long.");
-                    hideLoading();
-                    return;
-                }
-                if (password !== confirmPassword) {
-                    showError("The passwords don't match. Please try again.");
-                    hideLoading();
-                    return;
-                }
-                if (firstName.length < 1 || lastName.length < 1) {
-                    showError("Please enter both your first and last name.");
-                    hideLoading();
-                    return;
-                }
-
-                try {
-                    const response = await fetch(`${API_BASE_URL}/auth/register`, {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json'
-                        },
-                        body: JSON.stringify({
-                            email,
-                            password,
-                            firstName,
-                            lastName,
-                            userType
-                        })
-                    });
-
-                    if (!response.ok) {
-                        throw new Error('Registration failed');
-                    }
-
-                    const data = await response.json();
-                    AppState.currentUser = data.user;
-                    AppState.currentSessionId = data.sessionId;
-                    
-                    localStorage.setItem('currentUser', JSON.stringify(data.user));
-                    localStorage.setItem('sessionId', data.sessionId);
-                    
-                    $('#authModal').modal('hide');
-                    updateUIForLoggedInUser();
-                    hideLoading();
-                } catch (error) {
-                    hideLoading();
-                    showError(error.message);
-                }
-            }
-
-            function swapForms(hideForm, showForm) {
-                hideForm.style.display = 'none';
-                showForm.style.display = 'block';
-            }
-
-            function validateEmail(email) {
-                return /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(email);
-            }
-
-            function validateEduEmail(email) {
-                return /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.edu$/.test(email);
-            }
-
-            // Update the modal event handlers
-            $('#authModal').on('show.bs.modal', function () {
+        // Custom event setup for application-specific events
+        function setupCustomEvents() {
+            document.getElementById('authModal').addEventListener('shown.bs.modal', function () {
                 // Keep the current page visible
                 const currentPage = document.getElementById(`${AppState.currentPage}Content`);
                 if (currentPage) {
@@ -996,7 +884,7 @@
                 }
             });
 
-            $('#authModal').on('hidden.bs.modal', function () {
+            document.getElementById('authModal').addEventListener('hidden.bs.modal', function () {
                 // Show appropriate content when modal closes
                 if (AppState.currentUser) {
                     showDashboard();
@@ -1004,369 +892,1413 @@
                     showLanding();
                 }
             });
-        });
 
-        // Check for existing session and page state on load
-        document.addEventListener('DOMContentLoaded', () => {
-            // Hide all content initially
-            const pages = document.querySelectorAll('.page-content');
-            pages.forEach(page => {
-                page.style.display = 'none';
-                page.classList.remove('active');
+            document.getElementById('createTeamModal').addEventListener('shown.bs.modal', function (event) {
+                if (event) event.preventDefault();
+                // Just use our preload function which doesn't fetch if data is already cached
+                preloadTeamDropdown();
             });
-
-            // Check session and restore state
-            const user = localStorage.getItem('currentUser');
-            const sessionId = localStorage.getItem('sessionId');
-            const currentPage = sessionStorage.getItem('currentPage');
             
-            if (user && sessionId) {
-                AppState.currentUser = JSON.parse(user);
-                AppState.currentSessionId = sessionId;
-                updateUIForLoggedInUser();
-                
-                if (currentPage === 'studentDashboard' || currentPage === 'teacherDashboard') {
-                    showDashboard();
-                } else {
-                    showLanding();
+            // Setup dropdown toggle functionality
+            const dropdownToggles = document.querySelectorAll('.dropdown-toggle');
+            dropdownToggles.forEach(toggle => {
+                toggle.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const dropdownMenu = this.nextElementSibling;
+                    if (dropdownMenu && dropdownMenu.classList.contains('dropdown-menu')) {
+                        // Close other open dropdowns
+                        document.querySelectorAll('.dropdown-menu.show').forEach(menu => {
+                            if (menu !== dropdownMenu) {
+                                menu.classList.remove('show');
+                            }
+                        });
+                        
+                        // Toggle the current dropdown
+                        dropdownMenu.classList.toggle('show');
+                    }
+                });
+            });
+            
+            // Close dropdowns when clicking outside
+            document.addEventListener('click', function(e) {
+                if (!e.target.closest('.dropdown')) {
+                    document.querySelectorAll('.dropdown-menu.show').forEach(menu => {
+                        menu.classList.remove('show');
+                    });
                 }
-            } else {
-                updateUIForLoggedOutUser();
-                showLanding();
-            }
+            });
+        }
+
+        // Update the DOM ready event to use all our custom code
+        document.addEventListener('DOMContentLoaded', function() {
+            setupTabs();
+            setupModals();
+            setupCustomEvents();
         });
+    </script>
 
-        function checkSession() {
-            const user = localStorage.getItem('currentUser');
-            const sessionId = localStorage.getItem('sessionId');
-            
-            if (user && sessionId) {
-                AppState.currentUser = JSON.parse(user);
-                AppState.currentSessionId = sessionId;
-                updateUIForLoggedInUser();
+<!-- Add back the missing JavaScript application code -->
+<script>
+    // Add state management
+    const AppState = {
+        currentPage: 'landing',
+        currentUser: null,
+        currentSessionId: null,
+        isLoading: false,
+        cachedCourses: [],
+        cachedStudents: {}, // Map of courseId -> students array
+        cachedTeams: []     // Add cached teams array
+    };
+
+    // Global error handling functions
+    function showError(message) {
+        Swal.fire({
+            title: 'Error',
+            text: message,
+            icon: 'error'
+        });
+    }
+
+    function showSuccess(message) {
+        Swal.fire({
+            title: 'Success',
+            text: message,
+            icon: 'success'
+        });
+    }
+
+    // Add loading overlay to prevent flickering
+    const loadingOverlay = document.createElement('div');
+    loadingOverlay.id = 'loadingOverlay';
+    loadingOverlay.style.cssText = `
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: white;
+        z-index: 9999;
+        display: none;
+    `;
+    document.body.appendChild(loadingOverlay);
+
+    function showLoading() {
+        loadingOverlay.style.display = 'block';
+    }
+
+    function hideLoading() {
+        loadingOverlay.style.display = 'none';
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+        // Form elements
+        const loginForm = document.getElementById('frmLogin');
+        const registerForm = document.getElementById('frmRegister');
+        const btnLogin = document.getElementById('btnLogin');
+        const btnRegister = document.getElementById('btnRegister');
+        const btnSwapRegister = document.getElementById('btnSwapRegister');
+        const btnSwapLogin = document.getElementById('btnSwapLogin');
+        const authModal = document.getElementById('authModal');
+
+        // Input fields
+        const txtEmail = document.getElementById('txtEmail');
+        const txtPassword = document.getElementById('txtPassword');
+        const txtRegEmail = document.getElementById('txtRegEmail');
+        const txtRegPassword = document.getElementById('txtRegPassword');
+        const txtConfirmPassword = document.getElementById('txtConfirmPassword');
+        const txtFirstName = document.getElementById('txtFirstName');
+        const txtLastName = document.getElementById('txtLastName');
+
+        // Event Listeners
+        btnLogin.addEventListener('click', handleLogin);
+        btnRegister.addEventListener('click', handleRegister);
+        btnSwapRegister.addEventListener('click', () => swapForms(loginForm, registerForm));
+        btnSwapLogin.addEventListener('click', () => swapForms(registerForm, loginForm));
+
+        // Add event listener for sign out button
+        const signOutButton = document.getElementById('signOutButton');
+        if (signOutButton) {
+            signOutButton.addEventListener('click', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                signOut();
+            });
+        }
+        
+        // Also add a direct event listener on the Dashboard link
+        const dashboardLink = document.getElementById('dashboardLink');
+        if (dashboardLink) {
+            dashboardLink.addEventListener('click', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                showDashboard();
+            });
+        }
+
+        // Functions
+        async function handleLogin() {
+            try {
+                console.log('Attempting login with email:', txtEmail.value.trim());
                 
-                const currentPage = sessionStorage.getItem('currentPage');
-                if (currentPage === 'studentDashboard' || currentPage === 'teacherDashboard') {
-                    showDashboard();
-                } else {
-                   showLanding();
+                const response = await fetch(`${API_BASE_URL}/auth/login`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ 
+                        email: txtEmail.value.trim(), 
+                        password: txtPassword.value.trim() 
+                    })
+                });
+
+                console.log('Login response status:', response.status);
+                
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    console.error('Login failed with error:', errorData);
+                    throw new Error(errorData.error || 'Login failed');
                 }
-            } else {
-                updateUIForLoggedOutUser();
-                showLanding();
+
+                const data = await response.json();
+                console.log('Login successful, received data:', data);
+                
+                AppState.currentUser = data.user;
+                AppState.currentSessionId = data.sessionId;
+                
+                localStorage.setItem('currentUser', JSON.stringify(data.user));
+                localStorage.setItem('sessionId', data.sessionId);
+                
+                closeModal('authModal');
+                updateUIForLoggedInUser();
+                showDashboard();
+            } catch (error) {
+                console.error('Login error details:', {
+                    message: error.message,
+                    stack: error.stack
+                });
+                showError(error.message);
             }
         }
 
-        function showDashboard() {
-            if (!AppState.currentUser) {
-                setPageState('landing');
+        async function handleRegister() {
+            showLoading();
+            const email = txtRegEmail.value.trim();
+            const password = txtRegPassword.value.trim();
+            const confirmPassword = txtConfirmPassword.value.trim();
+            const firstName = txtFirstName.value.trim();
+            const lastName = txtLastName.value.trim();
+            const userType = document.querySelector('input[name="userType"]:checked').value;
+
+            if (!validateEmail(email)) {
+                showError("Please enter a valid email address.");
+                return;
+            }
+            if (!validateEduEmail(email)) {
+                showError("Please use your university email address (.edu).");
+                return;
+            }
+            if (password.length < 6) {
+                showError("Your password needs to be at least 6 characters long.");
+                return;
+            }
+            if (password !== confirmPassword) {
+                showError("The passwords don't match. Please try again.");
+                return;
+            }
+            if (firstName.length < 1 || lastName.length < 1) {
+                showError("Please enter both your first and last name.");
                 return;
             }
 
-            const targetPage = AppState.currentUser.userType === 'teacher' ? 'teacherDashboard' : 'studentDashboard';
-
-            setPageState(targetPage);
-
-            if (targetPage === 'teacherDashboard') {
-                    loadTeacherData();
-            } else {
-                    loadStudentData();
-            }
-        }
-
-        function showLanding() {
-            setPageState('landing');
-        }
-
-        // Add these functions to handle dashboard data loading
-        async function loadStudentData() {
             try {
-                const response = await fetch('http://localhost:3000/api/reports/student/' + AppState.currentUser.userId, {
+                const response = await fetch(`${API_BASE_URL}/auth/register`, {
+                    method: 'POST',
                     headers: {
-                        'session-id': AppState.currentSessionId
-                    }
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        email,
+                        password,
+                        firstName,
+                        lastName,
+                        userType
+                    })
                 });
-                
+
                 if (!response.ok) {
-                    throw new Error('Failed to load student data');
+                    throw new Error('Registration failed');
                 }
-                
+
                 const data = await response.json();
+                AppState.currentUser = data.user;
+                AppState.currentSessionId = data.sessionId;
                 
-                // Update student dashboard with real data
-                document.getElementById('studentUserName').textContent = AppState.currentUser.firstName;
-                // Add more data updates here as needed
+                localStorage.setItem('currentUser', JSON.stringify(data.user));
+                localStorage.setItem('sessionId', data.sessionId);
                 
+                closeModal('authModal');
+                updateUIForLoggedInUser();
+                showDashboard();
             } catch (error) {
-                console.error('Error loading student data:', error);
-                showError('Failed to load student dashboard data');
+                hideLoading();
+                showError(error.message);
             }
         }
 
-        async function loadTeacherData() {
-            try {
-                const response = await fetch(`${API_BASE_URL}/courses`, {
-                    headers: {
-                        'session-id': AppState.currentSessionId
+        function swapForms(hideForm, showForm) {
+            hideForm.style.display = 'none';
+            showForm.style.display = 'block';
+        }
+
+        function validateEmail(email) {
+            return /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(email);
+        }
+
+        function validateEduEmail(email) {
+            return /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.edu$/.test(email);
+        }
+    });
+
+    // Check for existing session and page state on load
+    document.addEventListener('DOMContentLoaded', () => {
+        // Hide all content initially
+        const pages = document.querySelectorAll('.page-content');
+        pages.forEach(page => {
+            page.style.display = 'none';
+            page.classList.remove('active');
+        });
+
+        // Check session and restore state
+        const user = localStorage.getItem('currentUser');
+        const sessionId = localStorage.getItem('sessionId');
+        const currentPage = sessionStorage.getItem('currentPage');
+        
+        if (user && sessionId) {
+            // Verify the session is still valid
+            verifySession(sessionId)
+                .then(valid => {
+                    if (valid) {
+                        AppState.currentUser = JSON.parse(user);
+                        AppState.currentSessionId = sessionId;
+                        updateUIForLoggedInUser();
+                        
+                        if (currentPage === 'dashboard') {
+                            showDashboard();
+                        } else {
+                            showLanding();
+                        }
+                    } else {
+                        // Session is invalid, clear it
+                        handleSessionExpiration();
                     }
+                })
+                .catch(err => {
+                    console.error('Error verifying session:', err);
+                    handleSessionExpiration();
                 });
-                
-                if (!response.ok) {
-                    throw new Error('Failed to load teacher data');
-                }
-                
-                const courses = await response.json();
-                
-                // Update teacher dashboard with real data
-                document.getElementById('teacherUserName').textContent = AppState.currentUser.firstName;
-                
-                // Update courses table
-                const coursesTableBody = document.getElementById('coursesTableBody');
-                coursesTableBody.innerHTML = '';
-                
-                if (courses.length === 0) {
-                    coursesTableBody.innerHTML = `
-                        <tr>
-                            <td colspan="7" class="text-center">No courses found. Create your first course!</td>
-                        </tr>
-                    `;
-                } else {
-                    courses.forEach(course => {
-                        const row = document.createElement('tr');
-                        row.innerHTML = `
-                            <td>${course.course_name}</td>
-                            <td>${course.course_number}</td>
-                            <td>${course.course_section}</td>
-                            <td>${course.course_term}</td>
-                            <td>${new Date(course.start_date).toLocaleDateString()}</td>
-                            <td>${new Date(course.end_date).toLocaleDateString()}</td>
-                            <td>
-                                <button class="btn btn-sm btn-danger" onclick="deleteCourse('${course.course_id}')">Delete</button>
-                            </td>
-                        `;
-                        coursesTableBody.appendChild(row);
-                    });
-                }
+        } else {
+            updateUIForLoggedOutUser();
+            showLanding();
+        }
+    });
 
-                // Update overview counts
-                document.getElementById('activeCoursesCount').textContent = courses.length;
-                
-                // TODO: Update other counts when we implement those features
-                document.getElementById('totalStudentsCount').textContent = '0';
-                document.getElementById('pendingReviewsCount').textContent = '0';
-                document.getElementById('completedReviewsCount').textContent = '0';
-                
-            } catch (error) {
-                console.error('Error loading teacher data:', error);
-                showError('Failed to load teacher dashboard data');
-            }
+    // Verify session with the server
+    async function verifySession(sessionId) {
+        try {
+            const response = await fetch(`${API_BASE_URL}/auth/verify`, {
+                method: 'GET',
+                headers: {
+                    'session-id': sessionId
+                }
+            });
+            
+            // If response is ok, session is valid
+            return response.ok;
+        } catch (error) {
+            console.error('Session verification error:', error);
+            return false;
+        }
+    }
+
+    // Handle session expiration
+    function handleSessionExpiration() {
+        // Clear local state
+        AppState.currentUser = null;
+        AppState.currentSessionId = null;
+        AppState.cachedCourses = [];
+        AppState.cachedStudents = {};
+        AppState.cachedTeams = [];
+        localStorage.removeItem('currentUser');
+        localStorage.removeItem('sessionId');
+        
+        // Update UI
+        updateUIForLoggedOutUser();
+        showLanding();
+        
+        // Show error message to user
+        showError('Your session has expired. Please sign in again.');
+    }
+
+    function checkSession() {
+        const user = localStorage.getItem('currentUser');
+        const sessionId = localStorage.getItem('sessionId');
+        
+        if (user && sessionId) {
+            // Verify session is still valid
+            verifySession(sessionId)
+                .then(valid => {
+                    if (valid) {
+                        AppState.currentUser = JSON.parse(user);
+                        AppState.currentSessionId = sessionId;
+                        updateUIForLoggedInUser();
+                        
+                        // Only show dashboard if we're not already on it
+                        if (sessionStorage.getItem('currentPage') !== 'dashboard') {
+                            showDashboard();
+                        }
+                    } else {
+                        handleSessionExpiration();
+                    }
+                })
+                .catch(err => {
+                    console.error('Error checking session:', err);
+                    handleSessionExpiration();
+                });
+        } else {
+            updateUIForLoggedOutUser();
+            showLanding();
+        }
+    }
+
+    function showDashboard() {
+        if (!AppState.currentUser) {
+            setPageState('landing');
+            return;
         }
 
-        // Add this function to handle course deletion
-        async function deleteCourse(courseId) {
-            try {
-                // Show confirmation dialog
-                const result = await Swal.fire({
-                    title: 'Are you sure?',
-                    text: "You won't be able to revert this!",
-                    icon: 'warning',
-                    showCancelButton: true,
-                    confirmButtonColor: '#3085d6',
-                    cancelButtonColor: '#d33',
-                    confirmButtonText: 'Yes, delete it!'
-                });
-
-                if (!result.isConfirmed) {
+        // Verify session before showing dashboard
+        verifySession(AppState.currentSessionId)
+            .then(valid => {
+                if (!valid) {
+                    handleSessionExpiration();
                     return;
                 }
+                
+                // First set the page state
+                setPageState('dashboard');
 
-                // Store current scroll position
-                const currentScroll = window.scrollY;
+                // Then show appropriate dashboard based on user type
+                const studentDashboard = document.getElementById('studentDashboardPage');
+                const teacherDashboard = document.getElementById('teacherDashboardPage');
 
-                const response = await fetch(`${API_BASE_URL}/courses/${courseId}`, {
-                    method: 'DELETE',
-                    headers: {
-                        'session-id': AppState.currentSessionId
+                if (AppState.currentUser.userType === 'teacher') {
+                    if (teacherDashboard) {
+                        teacherDashboard.style.display = 'block';
+                        loadTeacherData();
                     }
-                });
-
-                if (!response.ok) {
-                    throw new Error('Failed to delete course');
+                } else {
+                    if (studentDashboard) {
+                        studentDashboard.style.display = 'block';
+                        loadStudentData();
+                    }
                 }
+            })
+            .catch(err => {
+                console.error('Error verifying session for dashboard:', err);
+                handleSessionExpiration();
+            });
+    }
 
-                showSuccess('Course deleted successfully');
-                
-                // Refresh the course list and restore scroll position
-                await loadTeacherData();
-                window.scrollTo(0, currentScroll);
-                
-                // Restore the last active tab based on stored state
-                if (AppState.lastActiveTeacherTabId) {
-                    $(`#${AppState.lastActiveTeacherTabId}`).click(); 
+    function showLanding() {
+        setPageState('landing');
+    }
+
+    // Add these functions to handle dashboard data loading
+    async function loadStudentData() {
+        try {
+            const response = await fetch(`http://localhost:3000/api/enrollments/${AppState.currentUser.userId}`, {
+                headers: {
+                    'session-id': AppState.currentSessionId
                 }
-            } catch (error) {
-                showError(error.message);
+            });
+            
+            if (!response.ok) {
+                throw new Error('Failed to load student data');
             }
-        }
+            
+            const data = await response.json();
+            
+            // Update student dashboard with real data
+            document.getElementById('studentUserName').textContent = AppState.currentUser.firstName;
+            // Add more data updates here as needed
+            const tableBody = document.querySelector('#student-courses tbody');
+            tableBody.innerHTML = ''; // Clear old rows
+            data.forEach(course => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${course.course_name}</td>
+                    <td>${course.course_number}</td>
+                    <td>${course.course_section}</td>
+                    <td>${course.instructor || 'N/A'}</td>
+                `;
+                tableBody.appendChild(row);
+            });
 
-        async function signOut() {
+            
+        } catch (error) {
+            console.error('Error loading student data:', error);
+            showError('Failed to load student dashboard data');
+        }
+    }
+
+    async function loadTeacherData() {
+        try {
+            // First, fetch and cache courses
+            const response = await fetch(`${API_BASE_URL}/courses`, {
+                headers: {
+                    'session-id': AppState.currentSessionId,
+                    'Cache-Control': 'no-cache, no-store, must-revalidate',
+                    'Pragma': 'no-cache'
+                },
+                credentials: 'same-origin',
+                cache: 'no-store'
+            });
+            
+            if (!response.ok) {
+                throw new Error('Failed to load teacher data');
+            }
+            
+            const courses = await response.json();
+            
+            // Cache the courses data
+            AppState.cachedCourses = courses;
+            
+            // Reset cached students
+            AppState.cachedStudents = {};
+            
+            // If there are courses, prefetch students for ALL courses
+            if (courses.length > 0) {
+                console.log('Prefetching students for all courses');
+                
+                // Create an array of fetch promises to load students for all courses
+                const fetchPromises = courses.map(course => {
+                    return fetch(`${API_BASE_URL}/courses/${course.course_id}/students`, {
+                        headers: {
+                            'session-id': AppState.currentSessionId
+                        }
+                    })
+                    .then(res => {
+                        if (res.ok) return res.json();
+                        return []; // Empty array if fetch fails
+                    })
+                    .then(students => {
+                        AppState.cachedStudents[course.course_id] = students;
+                        console.log(`Cached ${students.length} students for course ${course.course_id}`);
+                    })
+                    .catch(err => {
+                        console.error(`Error fetching students for course ${course.course_id}:`, err);
+                        AppState.cachedStudents[course.course_id] = []; // Set empty array
+                    });
+                });
+                
+                // Wait for all student data to be fetched
+                try {
+                    await Promise.all(fetchPromises);
+                    console.log('All student data prefetched successfully');
+                } catch (err) {
+                    console.error('Error prefetching all student data:', err);
+                    // Non-critical error, continue loading the dashboard
+                }
+            }
+            
+            // Fetch and cache teams data
             try {
-                const response = await fetch(`${API_BASE_URL}/auth/logout`, {
-                    method: 'POST',
+                const teamsResponse = await fetch(`${API_BASE_URL}/teams`, {
                     headers: {
                         'session-id': AppState.currentSessionId
                     }
                 });
-
-                if (!response.ok) {
-                    throw new Error('Logout failed');
-                }
-
-                // Clear local state
-                AppState.currentUser = null;
-                AppState.currentSessionId = null;
-                localStorage.removeItem('currentUser');
-                localStorage.removeItem('sessionId');
                 
-                // Update UI without refreshing
-                updateUIForLoggedOutUser();
-                showLanding();
+                if (teamsResponse.ok) {
+                    const teams = await teamsResponse.json();
+                    AppState.cachedTeams = teams;
+                    console.log(`Cached ${teams.length} teams`);
+                    
+                    // Display teams in the teams tab
+                    displayTeams();
+                } else {
+                    console.error('Failed to fetch teams data');
+                    AppState.cachedTeams = [];
+                }
             } catch (error) {
-                showError(error.message);
+                console.error('Error fetching teams data:', error);
+                AppState.cachedTeams = [];
             }
-        }
+            
+            // Update teacher dashboard with real data
+            document.getElementById('teacherUserName').textContent = AppState.currentUser.firstName;
+            
+            // Update courses table
+            const coursesTableBody = document.getElementById('coursesTableBody');
+            coursesTableBody.innerHTML = '';
+            
+            if (courses.length === 0) {
+                coursesTableBody.innerHTML = `
+                    <tr>
+                        <td colspan="7" class="text-center">No courses found. Create your first course!</td>
+                    </tr>
+                `;
+            } else {
+                courses.forEach(course => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td>${course.course_name}</td>
+                        <td>${course.course_number}</td>
+                        <td>${course.course_section}</td>
+                        <td>${course.course_term}</td>
+                        <td>${new Date(course.start_date).toLocaleDateString()}</td>
+                        <td>${new Date(course.end_date).toLocaleDateString()}</td>
+                        <td>
+                            <button class="btn btn-sm btn-danger" onclick="deleteCourse('${course.course_id}')">Delete</button>
+                        </td>
+                    `;
+                    coursesTableBody.appendChild(row);
+                });
+            }
 
-        function updateUIForLoggedInUser() {
-            document.getElementById('authButtons').style.display = 'none';
-            document.getElementById('userButtons').style.display = 'block';
-            document.getElementById('userName').textContent = AppState.currentUser.firstName;
-        }
+            // Update overview counts
+            document.getElementById('activeCoursesCount').textContent = courses.length;
+            
+            // TODO: Update other counts when we implement those features
+            document.getElementById('totalStudentsCount').textContent = '0';
+            document.getElementById('pendingReviewsCount').textContent = '0';
+            document.getElementById('completedReviewsCount').textContent = '0';
+            
+            // Preload the courses dropdown for team creation
+            preloadTeamDropdown();
+            
+            // Populate the review course dropdown
+            populateReviewCourseDropdown();
+            
+            // Load teacher reviews
+            loadTeacherReviews();
 
-        function updateUIForLoggedOutUser() {
-            document.getElementById('authButtons').style.display = 'block';
-            document.getElementById('userButtons').style.display = 'none';
+            // Load teacher student reports
+            loadTeacherStudentReports();
+            
+        } catch (error) {
+            console.error('Error loading teacher data:', error);
+            showError('Failed to load teacher dashboard data');
+        }
+    }
+
+    // Function to load and display student average reports for the teacher
+    async function loadTeacherStudentReports() {
+        const tableBody = document.getElementById('studentAveragesTableBody');
+        if (!tableBody) {
+            console.error('Student averages table body not found');
+            return;
+        }
+        tableBody.innerHTML = '<tr><td colspan="2" class="text-center">Loading reports...</td></tr>'; // Loading indicator
+
+        try {
+            const response = await fetch(`${API_BASE_URL}/reports/teacher/students`, {
+                headers: {
+                    'session-id': AppState.currentSessionId
+                }
+            });
+
+            // Check if the response is ok AND is JSON before parsing
+            const contentType = response.headers.get("content-type");
+            if (!response.ok) {
+                let errorMsg = `HTTP error! status: ${response.status}`;
+                // Try to get more specific error from text if not JSON
+                if (contentType && contentType.indexOf("application/json") !== -1) {
+                    const errorData = await response.json(); 
+                    errorMsg = errorData.error || errorMsg;
+                } else {
+                    // If not JSON, maybe it's HTML or text
+                    const textError = await response.text();
+                    console.error("Non-JSON error response:", textError); // Log the raw response
+                    errorMsg += " - Server sent non-JSON response."; 
+                }
+                throw new Error(errorMsg);
+            } 
+            // Only parse if content type is JSON
+            else if (!contentType || contentType.indexOf("application/json") === -1) {
+                 const textResponse = await response.text();
+                 console.error("Received non-JSON response:", textResponse);
+                 throw new Error("Received non-JSON response from server.");
+            }
+            
+            // If response is ok and content type is JSON, parse it
+            const reports = await response.json();
+
+            tableBody.innerHTML = ''; // Clear loading/previous rows
+
+            if (reports.length === 0) {
+                tableBody.innerHTML = '<tr><td colspan="2" class="text-center">No student data available for reports.</td></tr>';
+                return;
+            }
+
+            reports.forEach(report => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${report.firstName} ${report.lastName}</td>
+                    <td>${report.average}</td>
+                `;
+                tableBody.appendChild(row);
+            });
+
+        } catch (error) {
+            console.error('Error loading teacher student reports:', error);
+            showError('Failed to load student reports');
+            tableBody.innerHTML = `<tr><td colspan="2" class="text-center text-danger">Error loading reports: ${error.message}</td></tr>`;
+        }
+    }
+
+    // Function to display teams in the teams tab
+    function displayTeams() {
+        const teamsTableBody = document.getElementById('teamsTableBody');
+        if (!teamsTableBody) {
+            console.error('Teams table body not found');
+            return;
+        }
+        
+        teamsTableBody.innerHTML = '';
+        
+        if (!AppState.cachedTeams || AppState.cachedTeams.length === 0) {
+            teamsTableBody.innerHTML = `
+                <tr>
+                    <td colspan="3" class="text-center">No teams found. Create your first team!</td>
+                </tr>
+            `;
+            return;
+        }
+        
+        AppState.cachedTeams.forEach(team => {
+            const row = document.createElement('tr');
+            
+            // Format the members as a comma-separated list
+            const membersText = Array.isArray(team.members) ? team.members.join(', ') : '';
+            
+            row.innerHTML = `
+                <td>${team.group_name}</td>
+                <td>${team.course_number} - ${team.course_name}</td>
+                <td>${membersText}</td>
+            `;
+            
+            teamsTableBody.appendChild(row);
+        });
+    }
+
+    // Add this function to handle course deletion
+    async function deleteCourse(courseId) {
+        try {
+            // Show confirmation dialog
+            const result = await Swal.fire({
+                title: 'Are you sure?',
+                text: "You won't be able to revert this!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Yes, delete it!'
+            });
+
+            if (!result.isConfirmed) {
+                return;
+            }
+
+            // Store current scroll position
+            const currentScroll = window.scrollY;
+
+            const response = await fetch(`${API_BASE_URL}/courses/${courseId}`, {
+                method: 'DELETE',
+                headers: {
+                    'session-id': AppState.currentSessionId
+                }
+            });
+
+            if (!response.ok) {
+                throw new Error('Failed to delete course');
+            }
+
+            showSuccess('Course deleted successfully');
+            
+            // Clear the course and student caches
+            AppState.cachedCourses = [];
+            AppState.cachedStudents = {};
+            
+            // Refresh the course list and restore scroll position
+            await loadTeacherData();
+            window.scrollTo(0, currentScroll);
+        } catch (error) {
+            showError(error.message);
+        }
+    }
+
+    async function signOut() {
+        try {
+            const response = await fetch(`${API_BASE_URL}/auth/logout`, {
+                method: 'POST',
+                headers: {
+                    'session-id': AppState.currentSessionId
+                }
+            });
+
+            if (!response.ok) {
+                throw new Error('Logout failed');
+            }
+
+            // Clear local state
             AppState.currentUser = null;
             AppState.currentSessionId = null;
+            AppState.cachedCourses = [];
+            AppState.cachedStudents = {};
+            localStorage.removeItem('currentUser');
+            localStorage.removeItem('sessionId');
+            
+            // Update UI without refreshing
+            updateUIForLoggedOutUser();
+            showLanding();
+        } catch (error) {
+            showError(error.message);
+        }
+    }
+
+    function updateUIForLoggedInUser() {
+        document.getElementById('authButtons').style.display = 'none';
+        document.getElementById('userButtons').style.display = 'block';
+        document.getElementById('userName').textContent = AppState.currentUser.firstName;
+    }
+
+    function updateUIForLoggedOutUser() {
+        document.getElementById('authButtons').style.display = 'block';
+        document.getElementById('userButtons').style.display = 'none';
+        AppState.currentUser = null;
+        AppState.currentSessionId = null;
+    }
+
+    // Add CSS for smooth transitions
+    const style = document.createElement('style');
+    style.textContent = `
+        .page-content {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            min-height: 100vh;
+            transition: opacity 0.3s ease-in-out;
+            opacity: 0;
+            pointer-events: none;
+            margin-top: 4rem;
         }
 
-        // Add CSS for smooth transitions
-        const style = document.createElement('style');
-        style.textContent = `
-            .page-content {
-                position: absolute;
-                top: 0;
-                left: 0;
-                width: 100%;
-                min-height: 100vh;
-                transition: opacity 0.3s ease-in-out;
-                opacity: 0;
-                pointer-events: none;
-                margin-top: 4rem;
-            }
+        .page-content.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
 
-            .page-content.active {
-                opacity: 1;
-                pointer-events: auto;
-            }
+        .navbar {
+            z-index: 1000;
+        }
+        
+        /* Dropdown styles */
+        .dropdown-menu {
+            display: none;
+        }
+        
+        .dropdown-menu.show {
+            display: block;
+        }
+    `;
+    document.head.appendChild(style);
 
-            .navbar {
-                z-index: 1000;
-            }
-        `;
-        document.head.appendChild(style);
+    // Update the navigation functions
+    function setPageState(page) {
+        // Update state
+        AppState.currentPage = page;
+        sessionStorage.setItem('currentPage', page);
 
-        // Update the navigation functions
-        function setPageState(page) {
-            // Update state
-            AppState.currentPage = page;
-            sessionStorage.setItem('currentPage', page);
+        // Get all page elements
+        const pages = document.querySelectorAll('.page-content');
 
-            // Get all page elements
-            const pages = document.querySelectorAll('.page-content');
+        // Hide all pages first
+        pages.forEach(page => {
+            page.style.display = 'none';
+            page.classList.remove('active');
+        });
 
-            // Hide all pages first
-            pages.forEach(p => {
-                p.style.display = 'none';
-                p.classList.remove('active');
+        // Show the target page
+        const targetPage = document.getElementById(`${page}Content`);
+        if (targetPage) {
+            targetPage.style.display = 'block';
+            targetPage.classList.add('active');
+        }
+
+        // Update navigation items
+        const landingNavItems = document.querySelectorAll('#landingNavItems');
+        landingNavItems.forEach(item => {
+            item.style.display = page === 'landing' ? 'block' : 'none';
+        });
+
+        // Scroll to top
+        window.scrollTo(0, 0);
+    }
+
+    // Add this function to handle smooth scrolling
+    function scrollToSection(sectionId) {
+        const section = document.getElementById(sectionId);
+        if (section) {
+            section.scrollIntoView({ behavior: 'smooth' });
+        }
+    }
+
+    // Add event listener for create course button
+    document.getElementById('createCourseBtn').addEventListener('click', async function(event) {
+        event.preventDefault();
+        try {
+            const courseData = {
+                courseName: document.getElementById('courseName').value,
+                courseNumber: document.getElementById('courseNumber').value,
+                courseSection: document.getElementById('courseSection').value,
+                courseTerm: document.getElementById('courseTerm').value,
+                startDate: document.getElementById('startDate').value,
+                endDate: document.getElementById('endDate').value
+            };
+
+            const response = await fetch(`${API_BASE_URL}/courses`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'session-id': AppState.currentSessionId
+                },
+                body: JSON.stringify(courseData)
             });
 
-            // Show the target page
-            const targetPageElement = document.getElementById(`${page}Content`);
-            if (targetPageElement) {
-                targetPageElement.style.display = 'block';
-                setTimeout(() => {
-                    targetPageElement.classList.add('active');
-                }, 10);
+            if (!response.ok) {
+                const error = await response.json()
+                throw new Error(error.error || 'Failed to create course');
             }
 
-            // Update navigation items
-            const landingNavItems = document.querySelectorAll('#landingNavItems');
-            landingNavItems.forEach(item => {
-                item.style.display = page === 'landing' ? 'block' : 'none';
+            const result = await response.json();
+
+            // Clear the courses cache to ensure fresh data
+            AppState.cachedCourses = [];
+            AppState.cachedStudents = {};
+
+            // Close modal and refresh courses
+            closeModal('createCourseModal');
+            showSuccess(`Course created successfully! Course Code: ${result.courseId}`);
+            loadTeacherData();
+        } catch (error) {
+            showError(error.message);
+        }
+    });
+
+    document.getElementById('btnEnrollCourse').addEventListener('click', async () => {
+        const courseCode = document.getElementById('enrollCourseCode').value.trim()
+        if (!courseCode) {
+            showError('Please enter a course code');
+            return;
+        }
+
+        try {
+        const response = await fetch(`${API_BASE_URL}/enrollments`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'session-id': AppState.currentSessionId
+            },
+            body: JSON.stringify({ courseId: courseCode })
             });
 
-            // Scroll to top
-            window.scrollTo(0, 0);
-        }
+            const result = await response.json();
+            if (!response.ok) throw new Error(result.error || 'Enrollment failed');
 
-        // Add this function to handle smooth scrolling
-        function scrollToSection(sectionId) {
-            const section = document.getElementById(sectionId);
-            if (section) {
-                section.scrollIntoView({ behavior: 'smooth' });
+            showSuccess(`Successfully enrolled in course: ${result.courseName}`);
+            
+            const tableBody = document.querySelector('#student-courses tbody');
+            const newRow = document.createElement('tr')
+            newRow.innerHTML = `
+                <td>${result.courseName}</td>
+                <td>${result.courseNumber}</td>
+                <td>${result.courseSection}</td>
+                <td>${result.courseTerm}</td>
+            `;
+            tableBody.appendChild(newRow);
+
+            document.getElementById('enrollCourseCode').value = '';
+
+        } catch (err) {
+        showError(err.message);
+        }
+    });
+
+    document.getElementById('courseDropdown').addEventListener('change', (e) => {
+        e.preventDefault(); // Explicitly prevent default
+        e.stopPropagation(); // Stop event propagation
+        
+        console.log('Course dropdown changed, loading students from cache only');
+        try {
+            const courseId = e.target.value;
+            
+            // Use cached students only, preventing any fetch requests
+            if (AppState.cachedStudents && AppState.cachedStudents[courseId]) {
+                console.log(`Using cached students for selected course: ${courseId}`);
+                populateStudentsDropdown(AppState.cachedStudents[courseId]);
+            } else {
+                console.warn('No cached students found for selected course - using empty array');
+                populateStudentsDropdown([]);
             }
+        } catch (error) {
+            console.error('Error loading students:', error);
+            showError('Failed to load students for course');
         }
+        return false; // Extra precaution
+    });
 
-        // Add event listener for create course button
-        document.getElementById('createCourseBtn').addEventListener('click', async function() {
+    async function loadStudentsForCourse(courseId) {
+        // Check if we have cached students for this course
+        if (AppState.cachedStudents[courseId]) {
+            console.log(`Using cached students for course ${courseId}`);
+            populateStudentsDropdown(AppState.cachedStudents[courseId]);
+            return;
+        }
+        
+        // If we get here, it means we don't have the student data cached
+        console.log(`No cached students found for course ${courseId}`);
+        
+        // Instead of fetching and risking a page refresh, just show an empty list
+        // This should only happen if there's an error in caching logic, as we should have prefetched all courses
+        populateStudentsDropdown([]);
+        console.warn('Student data should have been prefetched. Using empty list to prevent refresh.');
+    }
+    
+    // Helper function to populate the students dropdown
+    function populateStudentsDropdown(students) {
+        const select = document.getElementById('selectStudents');
+        if (!select) return;
+        
+        select.innerHTML = '';
+        students.forEach(student => {
+            const option = document.createElement('option');
+            option.value = student.user_id;
+            option.textContent = `${student.first_name} ${student.last_name}`;
+            select.appendChild(option);
+        });
+    }
+
+    async function assignStudentsToGroup(groupId) {
+        const selectedStudents = Array.from(document.getElementById('selectStudents').selectedOptions).map(o => o.value)
+        if(selectedStudents.length === 0) return
+
+        await fetch(`${API_BASE_URL}/teams/assign`, {
+            method: 'POST', 
+            headers: {
+                'Content-Type': 'application/json',
+                'session-id': AppState.currentSessionId
+            },
+            body: JSON.stringify({ groupId, userIds: selectedStudents })
+        })
+    }
+
+    async function preloadTeamDropdown() {
+        console.log('Preloading team dropdown from cached data only');
+        
+        // Get dropdown element - it might not exist yet if modal hasn't been opened
+        const select = document.getElementById('courseDropdown');
+        if (!select) {
+            console.log('Course dropdown not found - modal probably not opened yet');
+            return; // Skip if not found
+        }
+        
+        select.innerHTML = '';
+        
+        if (AppState.cachedCourses && AppState.cachedCourses.length > 0) {
+            // Populate the courses dropdown
+            AppState.cachedCourses.forEach(course => {
+                const option = document.createElement('option');
+                option.value = course.course_id;
+                option.textContent = `${course.course_number} - ${course.course_name}`;
+                select.appendChild(option);
+            });
+            
+            // Get first course ID
+            const firstCourseId = AppState.cachedCourses[0].course_id;
+            
+            // Check if we have students for this course already cached
+            if (AppState.cachedStudents && AppState.cachedStudents[firstCourseId]) {
+                console.log(`Using cached students for first course: ${firstCourseId}`);
+                // Populate the students dropdown using cached data
+                populateStudentsDropdown(AppState.cachedStudents[firstCourseId]);
+            } else {
+                console.warn('No cached students found for first course - using empty array');
+                populateStudentsDropdown([]);
+            }
+        } else {
+            console.warn('No cached courses available to populate dropdown');
+        }
+    }
+
+    async function loadCoursesForDropdown() {
+        console.log('Loading courses for dropdown (using only cached data)');
+        
+        // Always use cached courses - should be available from dashboard load
+        if (AppState.cachedCourses && AppState.cachedCourses.length > 0) {
+            console.log('Using cached courses data for dropdown');
+            preloadTeamDropdown();
+            return false;
+        } else {
+            console.warn('No cached courses found. Dashboard should load this data.');
+            showError('Course data not available. Please refresh the dashboard.');
+            return false;
+        }
+    }
+
+    document.getElementById('createTeamBtn').addEventListener('click', async function(event) {
+        event.preventDefault();
+        try {
+            const teamName = document.getElementById('teamName').value.trim();
+            const courseId = document.getElementById('courseDropdown').value;
+            const studentIds = Array.from(document.getElementById('selectStudents').selectedOptions).map(opt => opt.value);
+
+            if (!teamName || !courseId || studentIds.length === 0) {
+                showError("Please fill out all fields and assign at least one student.");
+                return;
+            }
+
+            const res = await fetch(`${API_BASE_URL}/teams`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'session-id': AppState.currentSessionId
+                },
+                body: JSON.stringify({
+                    groupName: teamName,
+                    courseId,
+                    members: studentIds
+                })
+            });
+
+            if (!res.ok) {
+                const err = await res.json();
+                throw new Error(err.error || "Failed to create team");
+            }
+
+            showSuccess("Team created successfully!");
+            closeModal('createTeamModal');
+            document.getElementById('createTeamForm').reset();
+
+            // Refresh teams data after creating a new team
             try {
-                const courseData = {
-                    courseName: document.getElementById('courseName').value,
-                    courseNumber: document.getElementById('courseNumber').value,
-                    courseSection: document.getElementById('courseSection').value,
-                    courseTerm: document.getElementById('courseTerm').value,
-                    startDate: document.getElementById('startDate').value,
-                    endDate: document.getElementById('endDate').value
-                };
-
-                const response = await fetch(`${API_BASE_URL}/courses`, {
-                    method: 'POST',
+                const teamsResponse = await fetch(`${API_BASE_URL}/teams`, {
                     headers: {
-                        'Content-Type': 'application/json',
                         'session-id': AppState.currentSessionId
-                    },
-                    body: JSON.stringify(courseData)
+                    }
                 });
-
-                if (!response.ok) {
-                    throw new Error('Failed to create course');
-                }
-
-                // Close modal and refresh courses
-                $('#createCourseModal').modal('hide');
-                showSuccess('Course created successfully');
                 
-                await loadTeacherData(); // Make sure data is loaded before potentially switching tab
+                if (teamsResponse.ok) {
+                    const teams = await teamsResponse.json();
+                    AppState.cachedTeams = teams;
+                    displayTeams();
+                }
             } catch (error) {
-                showError(error.message);
+                console.error('Error refreshing teams data:', error);
+            }
+
+        } catch (error) {
+            console.error('Error:', error);
+            showError(error.message || 'An error occurred');
+        }
+    });
+
+    async function loadTeamsForTeacher() {
+        const res = await fetch(`${API_BASE_URL}/teams`, {
+            headers: {
+                'session-id': AppState.currentSessionId
             }
         });
 
-        // Add event listener for createCourseModal hidden event
-        $('#createCourseModal').on('hidden.bs.modal', function () {
-            // Restore the last active tab based on stored state after modal is fully hidden
-             if (AppState.lastActiveTeacherTabId) {
-                $(`#${AppState.lastActiveTeacherTabId}`).click(); 
+        const teams = await res.json();
+        const tbody = document.querySelector('#teamsTableBody');
+        tbody.innerHTML = '';
+
+        teams.forEach(team => {
+            const row = document.createElement('tr');
+            row.innerHTML = `
+                <td>${team.group_name}</td>
+                <td>${team.course_number} - ${team.course_name}</td>
+                <td>${team.members.join(', ')}</td>
+            `;
+            tbody.appendChild(row);
+        });
+    }
+
+    // Add function to populate the course dropdown in the Create Review modal
+    function populateReviewCourseDropdown() {
+        const select = document.getElementById('reviewCourseDropdown');
+        if (!select) {
+            console.warn('Review course dropdown not found');
+            return; 
+        }
+        
+        select.innerHTML = ''; // Clear existing options
+        
+        if (AppState.cachedCourses && AppState.cachedCourses.length > 0) {
+            console.log('Populating review course dropdown from cache');
+            AppState.cachedCourses.forEach(course => {
+                const option = document.createElement('option');
+                option.value = course.course_id;
+                option.textContent = `${course.course_number} - ${course.course_name}`;
+                select.appendChild(option);
+            });
+        } else {
+            console.warn('No cached courses available for review dropdown');
+            select.innerHTML = '<option value="">No courses found</option>'; // Placeholder
+        }
+    }
+
+    // Add function to load and display teacher reviews
+    async function loadTeacherReviews() {
+        const pendingTableBody = document.getElementById('pendingReviewsTableBody');
+        const completedTableBody = document.getElementById('completedReviewsTableBody');
+
+        // Clear existing rows
+        pendingTableBody.innerHTML = '';
+        completedTableBody.innerHTML = '';
+
+        try {
+            const response = await fetch(`${API_BASE_URL}/assessments/teacher`, {
+                headers: {
+                    'session-id': AppState.currentSessionId
+                }
+            });
+
+            if (!response.ok) {
+                throw new Error('Failed to load reviews');
             }
+
+            const reviews = await response.json();
+
+            if (reviews.length === 0) {
+                pendingTableBody.innerHTML = '<tr><td colspan="5" class="text-center">No pending reviews found.</td></tr>';
+                completedTableBody.innerHTML = '<tr><td colspan="5" class="text-center">No completed reviews found.</td></tr>';
+                return;
+            }
+
+            const now = new Date();
+            let pendingCount = 0;
+            let completedCount = 0;
+
+            reviews.forEach(review => {
+                const row = document.createElement('tr');
+                const courseDisplay = `${review.course_number} - ${review.course_name}`;
+                const endDate = new Date(review.end_time);
+                const isPending = review.status === 'pending' || review.status === 'open'; // Use status field
+                
+                // Use actual status and visibility from data
+                const statusBadge = isPending ? '<span class="badge badge-warning">Pending/Open</span>' : '<span class="badge badge-success">Completed</span>';
+                const visibilityBadge = review.visibility === 'public' 
+                                         ? '<span class="badge badge-success">Public</span>' 
+                                         : '<span class="badge badge-info">Private</span>';
+                const dateDisplay = endDate.toLocaleDateString();
+
+                row.innerHTML = `
+                    <td>${review.review_name}</td>
+                    <td>${courseDisplay}</td>
+                    <td>${dateDisplay}</td>
+                    <td>${visibilityBadge}</td> 
+                    <td>${statusBadge}</td>
+                `;
+
+                if (isPending) {
+                    pendingTableBody.appendChild(row);
+                    pendingCount++;
+                } else {
+                    completedTableBody.appendChild(row);
+                    completedCount++;
+                }
+            });
+
+            // Update overview counts (simple update for now)
+            document.getElementById('pendingReviewsCount').textContent = pendingCount;
+            document.getElementById('completedReviewsCount').textContent = completedCount;
+
+            if (pendingCount === 0) {
+                pendingTableBody.innerHTML = '<tr><td colspan="5" class="text-center">No pending reviews found.</td></tr>';
+            }
+            if (completedCount === 0) {
+                completedTableBody.innerHTML = '<tr><td colspan="5" class="text-center">No completed reviews found.</td></tr>';
+            }
+
+        } catch (error) {
+            console.error('Error loading teacher reviews:', error);
+            showError('Failed to load reviews');
+            pendingTableBody.innerHTML = '<tr><td colspan="5" class="text-center text-danger">Error loading reviews.</td></tr>';
+            completedTableBody.innerHTML = '<tr><td colspan="5" class="text-center text-danger">Error loading reviews.</td></tr>';
+        }
+    }
+
+    // Function to add a new question row to the Create Review modal
+    function addReviewQuestion() {
+        const container = document.getElementById('questionsContainer');
+        const questionIndex = container.children.length; // For unique IDs if needed
+
+        const questionDiv = document.createElement('div');
+        questionDiv.classList.add('form-group', 'border', 'p-3', 'mb-3');
+        questionDiv.innerHTML = `
+            <label><strong>Question ${questionIndex + 1}</strong></label>
+             <button type="button" class="close" aria-label="Close" onclick="this.parentElement.remove()">
+                <span aria-hidden="true">&times;</span>
+            </button>
+            <div class="form-group">
+                <label>Question Type</label>
+                <select class="form-control question-type" required>
+                    <option value="likert">Likert Scale</option>
+                    <option value="multiple_choice">Multiple Choice</option>
+                    <option value="short_answer">Short Answer</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Question Text</label>
+                <input type="text" class="form-control question-text" required>
+            </div>
+            <!-- Add options input if needed for MC/Likert later -->
+        `;
+        container.appendChild(questionDiv);
+    }
+
+    // Function to handle the submission of the Create Review form
+    async function handleCreateReview() {
+        const form = document.getElementById('createReviewForm');
+        const reviewName = form.querySelector('input[type="text"]').value.trim(); // First text input assumed to be name
+        const courseId = document.getElementById('reviewCourseDropdown').value;
+        const dueDate = form.querySelector('input[type="date"]').value;
+        const visibility = form.querySelector('select[required]:not(#reviewCourseDropdown)').value; // Second required select assumed visibility
+        
+        const questionsContainer = document.getElementById('questionsContainer');
+        const questionElements = questionsContainer.querySelectorAll('.form-group.border');
+        
+        const questions = [];
+        questionElements.forEach(qDiv => {
+            const type = qDiv.querySelector('.question-type').value;
+            const text = qDiv.querySelector('.question-text').value.trim();
+            // Basic validation within the loop
+            if (text) { // Only add if text is provided
+                questions.push({ type, text, options: [] }); // Add options later if needed
+            } 
         });
 
-        // Listen for tab changes to update AppState
-        $('#teacherTabs a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
-            if (e.target && e.target.id) {
-                AppState.lastActiveTeacherTabId = e.target.id;
-                // console.log("Active teacher tab set to:", AppState.lastActiveTeacherTabId); // For debugging
+        // --- Form Validation ---
+        if (!reviewName) return showError('Please enter a review name.');
+        if (!courseId) return showError('Please select a course.');
+        if (!dueDate) return showError('Please select a due date.');
+        if (!visibility) return showError('Please select visibility.');
+        if (questions.length === 0) return showError('Please add at least one valid question.');
+        // --- End Validation ---
+
+        const payload = {
+            courseId: courseId,
+            name: reviewName,
+            type: 'review', // Set type explicitly
+            startTime: new Date().toISOString(), // Use current time as start time
+            endTime: new Date(dueDate).toISOString(), // Ensure ISO format for end time
+            visibility: visibility,
+            questions: questions
+        };
+
+        console.log('Submitting review payload:', payload);
+
+        try {
+            showLoading(); // Show loading indicator
+            const response = await fetch(`${API_BASE_URL}/assessments`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'session-id': AppState.currentSessionId
+                },
+                body: JSON.stringify(payload)
+            });
+
+            const result = await response.json();
+
+            if (!response.ok) {
+                 console.error('Create review error response:', result);
+                throw new Error(result.error || 'Failed to create review');
             }
-        });
-    </script>
+
+            showSuccess('Review created successfully!');
+            closeModal('createReviewModal');
+            form.reset(); // Reset the form
+            questionsContainer.innerHTML = ''; // Clear dynamic questions
+            loadTeacherReviews(); // Refresh the reviews list
+
+        } catch (error) {
+            console.error('Error creating review:', error);
+            showError(error.message);
+        } finally {
+            hideLoading(); // Hide loading indicator
+        }
+    }
+    
+    // Add event listener for the submit button
+    document.addEventListener('DOMContentLoaded', () => {
+        const submitBtn = document.getElementById('createReviewSubmitBtn');
+        if(submitBtn) {
+             submitBtn.addEventListener('click', handleCreateReview);
+        }
+       
+        // Add at least one question by default when modal opens (optional)
+        const createReviewModal = document.getElementById('createReviewModal');
+        if (createReviewModal) {
+            createReviewModal.addEventListener('shown.bs.modal', function () {
+                 const container = document.getElementById('questionsContainer');
+                 // Add one question if container is empty
+                 if (container && container.children.length === 0) {
+                     addReviewQuestion(); 
+                 }
+            });
+            // Clear questions when modal is hidden
+             createReviewModal.addEventListener('hidden.bs.modal', function () {
+                 const container = document.getElementById('questionsContainer');
+                 if(container) container.innerHTML = '';
+                 document.getElementById('createReviewForm').reset();
+            });
+        }
+    });
+</script>
+
+<script>
+    // Add mobile menu toggle functionality
+    document.addEventListener('DOMContentLoaded', function() {
+        const navbarToggler = document.querySelector('.navbar-toggler');
+        const navbarCollapse = document.querySelector('.navbar-collapse');
+
+        if (navbarToggler && navbarCollapse) {
+            navbarToggler.addEventListener('click', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                navbarCollapse.classList.toggle('show');
+            });
+
+            // Close menu when clicking outside
+            document.addEventListener('click', function(e) {
+                if (!navbarCollapse.contains(e.target) && !navbarToggler.contains(e.target)) {
+                    navbarCollapse.classList.remove('show');
+                }
+            });
+
+            // Close menu when clicking on a nav link
+            const navLinks = document.querySelectorAll('.navbar-nav .nav-link');
+            navLinks.forEach(link => {
+                link.addEventListener('click', function() {
+                    navbarCollapse.classList.remove('show');
+                });
+            });
+        }
+    });
+</script>
 </body>
 </html>
