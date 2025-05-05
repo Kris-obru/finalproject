@@ -1345,10 +1345,59 @@
                 tableBody.appendChild(row);
             });
 
+            // Load student teams
+            await loadStudentTeams();
             
         } catch (error) {
             console.error('Error loading student data:', error);
             showError('Failed to load student dashboard data');
+        }
+    }
+
+    // Add function to load student teams
+    async function loadStudentTeams() {
+        try {
+            const response = await fetch(`${API_BASE_URL}/teams/student`, {
+                headers: {
+                    'session-id': AppState.currentSessionId
+                }
+            });
+
+            if (!response.ok) {
+                throw new Error('Failed to load student teams');
+            }
+
+            const teams = await response.json();
+            const tableBody = document.querySelector('#student-teams tbody');
+            tableBody.innerHTML = ''; // Clear old rows
+
+            if (teams.length === 0) {
+                tableBody.innerHTML = `
+                    <tr>
+                        <td colspan="3" class="text-center">You are not assigned to any teams yet.</td>
+                    </tr>
+                `;
+                return;
+            }
+
+            teams.forEach(team => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${team.group_name}</td>
+                    <td>${team.course_number} - ${team.course_name}</td>
+                    <td>${team.members.join(', ')}</td>
+                `;
+                tableBody.appendChild(row);
+            });
+        } catch (error) {
+            console.error('Error loading student teams:', error);
+            showError('Failed to load student teams');
+            const tableBody = document.querySelector('#student-teams tbody');
+            tableBody.innerHTML = `
+                <tr>
+                    <td colspan="3" class="text-center text-danger">Error loading teams. Please try again later.</td>
+                </tr>
+            `;
         }
     }
 
