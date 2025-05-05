@@ -505,6 +505,137 @@ app.post('/api/teams', authenticateUser, [
     });
 });
 
+app.get('/api/teams/student', authenticateUser, (req, res) => {
+    const userId = req.user.user_id;
+
+    const query = `
+        SELECT 
+            cg.group_name,
+            c.course_number,
+            c.course_name,
+            GROUP_CONCAT(u.first_name || ' ' || u.last_name) AS members
+        FROM tbl_group_members gm
+        JOIN tbl_course_groups cg ON gm.group_id = cg.course_group_id
+        JOIN tbl_courses c ON cg.course_id = c.course_id
+        LEFT JOIN tbl_group_members gm2 ON gm2.group_id = cg.course_group_id
+        LEFT JOIN tbl_users u ON gm2.user_id = u.user_id
+        WHERE gm.user_id = ?
+        GROUP BY cg.course_group_id
+    `;
+
+    db.all(query, [userId], (err, rows) => {
+        if (err) {
+            console.error('Error fetching student teams:', err);
+            return res.status(500).json({ error: 'Database error' });
+        }
+
+        const teams = rows.map(row => ({
+            ...row,
+            members: row.members ? row.members.split(',') : []
+        }));
+
+        res.json(teams);
+    });
+});
+
+app.get('/api/teams', authenticateUser, (req, res) => {
+    if (req.user.user_type !== 'teacher') {
+        return res.status(403).json({ error: 'Only instructors can view teams' });
+    }
+
+    const query = `
+        SELECT 
+            cg.course_group_id,
+            cg.group_name,
+            c.course_number,
+            c.course_name,
+            GROUP_CONCAT(u.first_name || ' ' || u.last_name) AS members
+        FROM tbl_course_groups cg
+        JOIN tbl_courses c ON cg.course_id = c.course_id
+        LEFT JOIN tbl_group_members gm ON cg.course_group_id = gm.group_id
+        LEFT JOIN tbl_users u ON gm.user_id = u.user_id
+        WHERE c.course_id IN (
+            SELECT course_id FROM tbl_courses
+        )
+        GROUP BY cg.course_group_id
+    `;
+
+    db.all(query, (err, rows) => {
+        if (err) {
+            console.error('Error fetching teams:', err);
+            return res.status(500).json({ error: 'Database error fetching teams' });
+        }
+
+        // Convert comma-separated members string to array
+        const teams = rows.map(row => ({
+            ...row,
+            members: row.members ? row.members.split(',') : []
+        }));
+
+        res.json(teams);
+    });
+});
+
+app.post('/api/teams/assign', authenticateUser, [
+    body('groupId').notEmpty(),
+    body('userIds').isArray({min: 1})
+], (req, res) => {
+    const errors = validationResult(req);
+    if(!errors.isEmpty()) {
+        return res.status(400).json({ errors: errors.array() });
+    }   
+
+    const { groupId, userIds } = req.body;
+
+    db.serialize(() => {
+        db.run('BEGIN TRANSACTION');
+        const stmt = db.prepare('INSERT OR IGNORE INTO tbl_group_members (group_id, user_id) VALUES (?, ?)');
+
+        for (const userId of userIds) {
+            stmt.run(groupId, userId, (err) => {
+                if (err) {
+                    console.error('Failed to assign user to group:', err);
+                    db.run('ROLLBACK');
+                    return res.status(500).json({ error: 'Failed to assign students' });
+                }
+            });
+        }
+
+        stmt.finalize((err) => {
+            if (err) {
+                db.run('ROLLBACK');
+                return res.status(500).json({ error: 'Error finalizing group assignment' });
+            }
+            db.run('COMMIT');
+            res.status(200).json({ message: 'Students assigned to group successfully' });
+        });
+    });
+})
+
+app.get('/api/courses/:courseId/students', authenticateUser, (req, res) => {
+    const { courseId } = req.params;
+
+    // Ensure only instructors can access
+    if (req.user.user_type !== 'teacher') {
+        return res.status(403).json({ error: 'Only instructors can view enrolled students' });
+    }
+
+    const query = `
+        SELECT u.user_id, u.first_name, u.last_name, u.email
+        FROM tbl_enrollments e
+        JOIN tbl_users u ON e.user_id = u.user_id
+        WHERE e.course_id = ?
+    `;
+
+    db.all(query, [courseId], (err, rows) => {
+        if (err) {
+            console.error('Error fetching students for course:', err);
+            return res.status(500).json({ error: 'Database error' });
+        }
+        res.json(rows);
+    });
+});
+
 // Assessment routes
 app.post('/api/assessments', authenticateUser, [
     body('courseId').notEmpty(),

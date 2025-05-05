@@ -326,18 +326,14 @@
                                                         </div>
                                                         <div class="form-group">
                                                             <label>Course</label>
-                                                            <select class="form-control" required>
-                                                                <option>CSCI101 - Intro to Web Dev</option>
-                                                                <option>CSCI202 - Software Engineering</option>
+                                                            <select id="courseDropdown" class="form-control" required>
+                                                                <!-- Will autofill -->
                                                             </select>
                                                         </div>
                                                         <div class="form-group">
-                                                            <label>Select Members</label>
-                                                            <select class="form-control" multiple required>
-                                                                <option>Alice</option>
-                                                                <option>Bob</option>
-                                                                <option>Carol</option>
-                                                                <option>Dave</option>
+                                                            <label>Assign Students</label>
+                                                            <select id="selectStudents" class="form-control" multiple>
+                                                                <!-- Filled in later -->
                                                             </select>
                                                         </div>
                                                         <button type="submit" class="btn btn-primary">Create</button>
@@ -1282,6 +1278,141 @@
             showError(err.message);
             }
         })
+
+        document.getElementById('courseDropdown').addEventListener('change', (e) => {
+            const courseId = e.target.value
+            loadStudentsForCourse(courseId)
+        })
+
+        $('#createTeamModal').on('shown.bs.modal', function () {
+            loadCoursesForDropdown();
+        });
+
+        async function loadStudentsForCourse(courseId) {
+            const res = await fetch(`${API_BASE_URL}/courses/${courseId}/students`, {
+                headers: {
+                    'session-id': AppState.currentSessionId
+                }
+            })
+            const students = await res.json()
+            const select = document.getElementById('selectStudents')
+            select.innerHTML = ''
+            students.forEach(student => {
+                const option = document.createElement('option')
+                option.value = student.user_id
+                option.textContent = `${student.first_name} ${student.last_name}`
+                select.appendChild(option)
+            })
+        }
+
+        async function assignStudentsToGroup(groupId) {
+            const selectedStudents = Array.from(document.getElementById('selectStudents').selectedOptions).map(o => o.value)
+            if(selected.length === 0) return
+
+            await fetch(`${API_BASE_URL}/teams/assign`, {
+                method: 'POST', 
+                headers: {
+                    'Content-Type': 'application/json',
+                    'session-id': AppState.currentSessionId
+                },
+                body: JSON.stringify({ groupId, userIds: selectedStudents })
+            })
+        }
+
+        async function loadCoursesForDropdown() {
+            try {
+                const response = await fetch(`${API_BASE_URL}/courses`, {
+                    headers: {
+                        'session-id': AppState.currentSessionId
+                    }
+                });
+
+                const courses = await response.json();
+                const select = document.getElementById('courseDropdown');
+                select.innerHTML = '';
+
+                courses.forEach(course => {
+                    const option = document.createElement('option');
+                    option.value = course.course_id;
+                    option.textContent = `${course.course_number} - ${course.course_name}`;
+                    select.appendChild(option);
+                });
+
+                // Auto-load students for the first course
+                if (courses.length > 0) {
+                    loadStudentsForCourse(courses[0].course_id);
+                }
+            } catch (err) {
+                console.error('Error loading courses:', err);
+                showError('Failed to load courses for team creation.');
+            }
+        }
+
+        document.querySelector('#createTeamForm').addEventListener('submit', async function (e) {
+            e.preventDefault();
+
+            const teamName = document.getElementById('teamName').value.trim();
+            const courseId = document.getElementById('courseDropdown').value;
+            const studentIds = Array.from(document.getElementById('selectStudents').selectedOptions).map(opt => opt.value);
+
+            if (!teamName || !courseId || studentIds.length === 0) {
+                showError("Please fill out all fields and assign at least one student.");
+                return;
+            }
+
+            try {
+                const res = await fetch(`${API_BASE_URL}/teams`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'session-id': AppState.currentSessionId
+                    },
+                    body: JSON.stringify({
+                        groupName: teamName,
+                        courseId,
+                        members: studentIds
+                    })
+                });
+
+                if (!res.ok) {
+                    const err = await res.json();
+                    throw new Error(err.error || "Failed to create team");
+                }
+
+                showSuccess("Team created successfully!");
+                $('#createTeamModal').modal('hide');
+                document.getElementById('createTeamForm').reset();
+
+                // Reload teacher teams or dashboard data
+                loadTeacherData(); 
+
+            } catch (err) {
+                showError(err.message);
+            }
+        });
+
+        async function loadTeamsForTeacher() {
+            const res = await fetch(`${API_BASE_URL}/teams`, {
+                headers: {
+                    'session-id': AppState.currentSessionId
+                }
+            });
+
+            const teams = await res.json();
+            const tbody = document.querySelector('#teacher-teams tbody');
+            tbody.innerHTML = '';
+
+            teams.forEach(team => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${team.group_name}</td>
+                    <td>${team.course_number} - ${team.course_name}</td>
+                    <td>${team.members.join(', ')}</td>
+                `;
+                tbody.appendChild(row);
+            });
+        }
+
     </script>
 </body>
 </html>
