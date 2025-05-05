@@ -322,7 +322,7 @@
                                                     <form id="createTeamForm">
                                                         <div class="form-group">
                                                             <label>Team Name</label>
-                                                            <input type="text" class="form-control" required>
+                                                            <input type="text" id="teamName"class="form-control" required>
                                                         </div>
                                                         <div class="form-group">
                                                             <label>Course</label>
@@ -989,11 +989,32 @@
                     tableBody.appendChild(row);
                 });
 
+                await loadStudentTeams()
                 
             } catch (error) {
                 console.error('Error loading student data:', error);
                 showError('Failed to load student dashboard data');
             }
+        }
+
+        async function loadStudentTeams() {
+            const res = await fetch(`${API_BASE_URL}/teams/student`, {
+                headers: { 'session-id': AppState.currentSessionId }
+            })
+
+            const teams = await res.json()
+            const tbody = document.querySelector('#student-teams tbody')
+            tbody.innerHTML = ''
+
+            teams.forEach(team => {
+                const row = document.createElement('tr')
+                row.innerHTML = `
+                    <td>${team.group_name}</td>
+                    <td>${team.course_number} - ${team.course_name}</td>
+                    <td>${team.members.join(', ')}</td>
+                `
+                tbody.appendChild(row)
+            })
         }
 
         async function loadTeacherData() {
@@ -1384,7 +1405,8 @@
                 document.getElementById('createTeamForm').reset();
 
                 // Reload teacher teams or dashboard data
-                loadTeacherData(); 
+                await loadTeacherData(); 
+                await loadTeamsForTeacher();
 
             } catch (err) {
                 showError(err.message);
