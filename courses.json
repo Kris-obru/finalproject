@@ -1,0 +1,14 @@
+[
+  {
+    "name": "Intro to Web Dev",
+    "code": "CSCI101",
+    "crn": "12345",
+    "students": 25
+  },
+  {
+    "name": "Software Engineering",
+    "code": "CSCI202",
+    "crn": "23456",
+    "students": 30
+  }
+] 

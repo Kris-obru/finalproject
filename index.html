@@ -414,19 +414,8 @@
                                         <th>Total Students</th>
                                     </tr>
                                 </thead>
-                                <tbody>
-                                    <tr>
-                                        <td>Intro to Web Dev</td>
-                                        <td>CSCI101</td>
-                                        <td>12345</td>
-                                        <td>25</td>
-                                    </tr>
-                                    <tr>
-                                        <td>Software Engineering</td>
-                                        <td>CSCI202</td>
-                                        <td>23456</td>
-                                        <td>30</td>
-                                    </tr>
+                                <tbody id="teacherCoursesTableBody">
+                                    <!-- Course rows will be loaded dynamically -->
                                 </tbody>
                             </table>
                             <!-- Create Course Modal -->
@@ -443,15 +432,15 @@
                                             <form id="createCourseForm">
                                                 <div class="form-group">
                                                     <label>Course Name</label>
-                                                    <input type="text" class="form-control" required>
+                                                    <input type="text" id="createCourseName" class="form-control" required>
                                                 </div>
                                                 <div class="form-group">
                                                     <label>Course Code</label>
-                                                    <input type="text" class="form-control" required>
+                                                    <input type="text" id="createCourseCode" class="form-control" required>
                                                 </div>
                                                 <div class="form-group">
                                                     <label>CRN</label>
-                                                    <input type="text" class="form-control" required>
+                                                    <input type="text" id="createCourseCRN" class="form-control" required>
                                                 </div>
                                                 <button type="submit" class="btn btn-primary">Create</button>
                                             </form>
@@ -723,6 +712,9 @@
             const btnSwapLogin = document.getElementById('btnSwapLogin');
             const authModal = document.getElementById('authModal');
 
+            // Teacher dashboard specific elements
+            const teacherCoursesTabLink = document.getElementById('teacher-courses-tab');
+
             // Input fields
             const txtEmail = document.getElementById('txtEmail');
             const txtPassword = document.getElementById('txtPassword');
@@ -732,11 +724,28 @@
             const txtFirstName = document.getElementById('txtFirstName');
             const txtLastName = document.getElementById('txtLastName');
 
+            // Get reference to the create course form
+            const createCourseForm = document.getElementById('createCourseForm');
+
             // Event Listeners
             btnLogin.addEventListener('click', handleLogin);
             btnRegister.addEventListener('click', handleRegister);
             btnSwapRegister.addEventListener('click', () => swapForms(loginForm, registerForm));
             btnSwapLogin.addEventListener('click', () => swapForms(registerForm, loginForm));
+
+            // Add event listener for the create course form submission
+            if (createCourseForm) {
+                createCourseForm.addEventListener('submit', handleCreateCourse);
+            }
+
+            // Add event listener for when the teacher's courses tab is shown
+            if (teacherCoursesTabLink) {
+                 // Using jQuery for Bootstrap event handling as Bootstrap JS depends on it
+                 $(teacherCoursesTabLink).on('shown.bs.tab', function (e) {
+                     console.log("Teacher courses tab shown, loading courses...");
+                     loadCourses();
+                 });
+            }
 
             // Functions
             function handleLogin() {
@@ -803,6 +812,134 @@
             function showError(message) {
                 Swal.fire({ title: "Oops!", text: message, icon: "error" });
             }
+
+            // Function to populate the teacher courses table
+            function populateTeacherCoursesTable(courses) {
+                 const tableBody = document.getElementById('teacherCoursesTableBody');
+                 if (!tableBody) {
+                     console.error("Teacher courses table body not found!");
+                     return;
+                 }
+                 tableBody.innerHTML = ''; // Clear existing rows
+                 if (courses.length === 0) {
+                     const row = tableBody.insertRow();
+                     const cell = row.insertCell();
+                     cell.colSpan = 4; // Span across all columns
+                     cell.textContent = 'No courses created yet.';
+                     cell.style.textAlign = 'center';
+                 } else {
+                     courses.forEach(course => {
+                         const row = tableBody.insertRow();
+                         row.insertCell().textContent = course.name;
+                         row.insertCell().textContent = course.code;
+                         row.insertCell().textContent = course.crn;
+                         // Assuming 'students' count is part of the JSON structure later
+                         row.insertCell().textContent = course.students !== undefined ? course.students : 0;
+                     });
+                 }
+            }
+
+            // Function to load courses from JSON
+            async function loadCourses() {
+                try {
+                    // *** NOTE: This fetch will only work if you run index.html via a local server ***
+                    // *** Direct file access (file:///) will likely fail due to CORS/security policies ***
+                    const response = await fetch('courses.json'); // Assumes courses.json is in the same directory or served at the root
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+                    const courses = await response.json();
+                    populateTeacherCoursesTable(courses);
+                } catch (error) {
+                    console.error('Error loading courses:', error);
+                     // Display error in table or show alert
+                     const tableBody = document.getElementById('teacherCoursesTableBody');
+                     if (tableBody) {
+                         tableBody.innerHTML = ''; // Clear existing rows
+                         const row = tableBody.insertRow();
+                         const cell = row.insertCell();
+                         cell.colSpan = 4;
+                         cell.textContent = 'Error loading courses. See console for details.';
+                         cell.style.textAlign = 'center';
+                         cell.style.color = 'red';
+                     }
+                     showError('Could not load course data. Please ensure courses.json exists and the page is served correctly.');
+                }
+            }
+
+            // Handler for creating a course
+            function handleCreateCourse(event) {
+                event.preventDefault(); // Prevent default form submission (page refresh)
+                console.log("Create Course form submitted, default refresh prevented.");
+
+                // Get form data using the new IDs
+                const courseNameInput = document.getElementById('createCourseName');
+                const courseCodeInput = document.getElementById('createCourseCode');
+                const courseCRNInput = document.getElementById('createCourseCRN');
+
+                const courseName = courseNameInput.value.trim();
+                const courseCode = courseCodeInput.value.trim();
+                const crn = courseCRNInput.value.trim();
+
+                // Basic validation (ensure fields aren't empty after trimming)
+                if (!courseName || !courseCode || !crn) {
+                     showError("Please fill out all course fields.");
+                     return;
+                 }
+
+                console.log('Course Data:', { courseName, courseCode, crn });
+
+                // Find the table body in the teacher's courses tab
+                const teacherCoursesTableBody = document.getElementById('teacherCoursesTableBody');
+
+                if (teacherCoursesTableBody) {
+                    // Create a new table row
+                    const newRow = document.createElement('tr');
+
+                    // Insert cells for the new course data
+                    const nameCell = document.createElement('td');
+                    nameCell.textContent = courseName;
+                    newRow.appendChild(nameCell);
+
+                    const codeCell = document.createElement('td');
+                    codeCell.textContent = courseCode;
+                    newRow.appendChild(codeCell);
+
+                    const crnCell = document.createElement('td');
+                    crnCell.textContent = crn;
+                    newRow.appendChild(crnCell);
+
+                    const studentsCell = document.createElement('td');
+                    studentsCell.textContent = '0'; // Default to 0 students for a new course
+                    newRow.appendChild(studentsCell);
+                    
+                     // Clear the form fields
+                    courseNameInput.value = '';
+                    courseCodeInput.value = '';
+                    courseCRNInput.value = '';
+
+                    // Close the modal
+                    $('#createCourseModal').modal('hide');
+
+                    // Show success message
+                    Swal.fire({ title: "Success!", text: `Course '${courseName}' added.`, icon: "success" });
+
+                    // Append the new row to the table body
+                    teacherCoursesTableBody.appendChild(newRow);
+
+                    // *** Backend Integration Needed ***
+                    // The following line only adds visually; it doesn't save to courses.json
+                    console.warn("Course added visually, but not saved to courses.json. Backend needed.");
+                    // To save permanently, you would:
+                    // 1. Create a new course object: const newCourse = { name: courseName, code: courseCode, crn: crn, students: 0 };
+                    // 2. Send it to your backend: await fetch('/api/courses', { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify(newCourse) });
+                    // 3. Optionally, reload courses after successful save: await loadCourses(); (or just rely on appending the row)
+                 
+                 } else {
+                    console.error("Could not find the teacher's courses table body.");
+                     showError("Could not update the course list.");
+                }
+            }
         });
 
         // Global functions for navigation
@@ -820,12 +957,13 @@
                 document.getElementById('studentDashboardPage').style.display = 'block';
             } else if (userType === 'teacher') {
                 document.getElementById('teacherDashboardPage').style.display = 'block';
+                loadCourses(); // Load courses when teacher dashboard is shown
             }
         }
 
         function switchToTeacherView() {
             localStorage.setItem('userType', 'teacher');
-            showDashboard('teacher');
+            showDashboard('teacher'); // This already calls loadCourses
         }
 
         function switchToStudentView() {
