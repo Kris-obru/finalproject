@@ -98,9 +98,9 @@
                         <div class="tab-pane fade" id="student-courses" role="tabpanel">
                             <h3>My Courses</h3>
                             <div class="input-group mb-3">
-                                <input type="text" class="form-control" placeholder="Enter course code to enroll">
+                                <input type="text" id="enrollCourseCode"class="form-control" placeholder="Enter course code to enroll">
                                 <div class="input-group-append">
-                                    <button class="btn btn-primary" type="button">Enroll</button>
+                                    <button class="btn btn-primary" id="btnEnrollCourse" type="button">Enroll</button>
                                 </div>
                             </div>
                             <table class="table table-bordered table-hover">
@@ -1216,17 +1216,59 @@
                 });
 
                 if (!response.ok) {
-                    throw new Error('Failed to create course');
+                    const error = await response.json()
+                    throw new Error(error.error || 'Failed to create course');
                 }
+
+                const result = await response.json();
 
                 // Close modal and refresh courses
                 $('#createCourseModal').modal('hide');
-                showSuccess('Course created successfully');
+                showSuccess(`Course created successfully! Course Code: ${result.courseId}`);
                 loadTeacherData();
             } catch (error) {
                 showError(error.message);
             }
         });
+
+        document.getElementById('btnEnrollCourse').addEventListener('click', async () => {
+            const courseCode = document.getElementById('enrollCourseCode').value.trim()
+            if (!courseCode) {
+                showError('Please enter a course code');
+                return;
+            }
+
+            try {
+            const response = await fetch(`${API_BASE_URL}/enroll`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'session-id': AppState.currentSessionId
+                },
+                body: JSON.stringify({ courseId: courseCode })
+                });
+
+                const result = await response.json();
+                if (!response.ok) throw new Error(result.error || 'Enrollment failed');
+
+                showSuccess(`Successfully enrolled in course: ${result.courseName}`);
+                
+                const tableBody = document.querySelector('#student-courses tbody');
+                const newRow = document.createElement('tr')
+                newRow.innerHTML = `
+                    <td>${result.courseName}</td>
+                    <td>${result.courseNumber}</td>
+                    <td>${result.courseSection}</td>
+                    <td>${result.courseTerm}</td>
+                `;
+                tableBody.appendChild(newRow);
+
+                document.getElementById('enrollCourseCode').value = '';
+
+            } catch (err) {
+            showError(err.message);
+            }
+        })
     </script>
 </body>
 </html>

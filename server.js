@@ -316,6 +316,16 @@ app.post('/api/auth/logout', authenticateUser, (req, res) => {
     });
 });
 
+// Utility function to generate course code
+function generateCourseCode() {
+        const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+    let code = '';
+    for (let i = 0; i < 6; i++) {
+        code += chars.charAt(Math.floor(Math.random() * chars.length));
+    }
+    return code;
+}
+
 // Course routes
 app.post('/api/courses', authenticateUser, [
     body('courseName').trim().notEmpty(),
@@ -331,7 +341,7 @@ app.post('/api/courses', authenticateUser, [
     }
 
     const { courseName, courseNumber, courseSection, courseTerm, startDate, endDate } = req.body;
-    const courseId = uuidv4();
+    const courseId = generateCourseCode();
 
     db.run(
         'INSERT INTO tbl_courses (course_id, course_name, course_number, course_section, course_term, start_date, end_date) VALUES (?, ?, ?, ?, ?, ?, ?)',
@@ -371,6 +381,36 @@ app.delete('/api/courses/:courseId', authenticateUser, (req, res) => {
         res.json({ message: 'Course deleted successfully' });
     });
 });
+
+// Enroll routes
+app.post('/api/enroll', authenticateUser, [
+    body('courseId').notEmpty(),
+], (req, res) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+        return res.status(400).json({ errors: errors.array() });
+    }
+    const { courseId } = req.body;
+    const userId = req.user.user_id;
+
+    db.get('SELECT * FROM tbl_courses WHERE course_id = ?', [courseId], (err, course) => {
+        if (err) return res.status(500).json({ error: 'Database error checking course' });
+        if (!course) return res.status(404).json({ error: 'Course not found' });
+
+        // Check if already enrolled
+        db.get('SELECT * FROM tbl_enrollments WHERE course_id = ? AND user_id = ?', [courseId, userId], (err, existing) => {
+            if (err) return res.status(500).json({ error: 'Database error checking enrollment' });
+            if (existing) return res.status(400).json({ error: 'Already enrolled in this course' });
+
+            // Enroll student
+            db.run('INSERT INTO tbl_enrollments (course_id, user_id) VALUES (?, ?)', [courseId, userId], (err) => {
+                if (err) return res.status(500).json({ error: 'Error enrolling in course' });
+                res.status(200).json({ message: 'Enrolled successfully', courseName: course.course_name });
+            });
+        });
+    });
+    
+})
 
 // Team routes
 app.post('/api/teams', authenticateUser, [
