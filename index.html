@@ -783,15 +783,12 @@
                 tabTrigger.addEventListener('click', function(e) {
                     e.preventDefault();
                     
-                    // Find the target tab
                     const target = document.querySelector(this.getAttribute('href'));
                     if (!target) return;
                     
-                    // Find parent tab list
                     const tabList = this.closest('.nav-tabs');
                     if (!tabList) return;
                     
-                    // Hide all tabs in the same group
                     const tabContainer = target.closest('.tab-content');
                     if (tabContainer) {
                         const allTabs = tabContainer.querySelectorAll('.tab-pane');
@@ -800,13 +797,11 @@
                         });
                     }
                     
-                    // Deactivate all tab triggers
                     const allTabTriggers = tabList.querySelectorAll('.nav-link');
                     allTabTriggers.forEach(tab => {
                         tab.classList.remove('active');
                     });
                     
-                    // Activate the clicked tab and its content
                     this.classList.add('active');
                     target.classList.add('show', 'active');
                 });
@@ -821,7 +816,6 @@
                     e.preventDefault();
                     const targetModal = document.querySelector(this.getAttribute('data-target'));
                     if (targetModal) {
-                        // Custom show modal function
                         showModal(targetModal.id);
                     }
                 });
@@ -842,13 +836,11 @@
             modal.classList.add('show');
             modal.style.display = 'block';
             
-            // Add backdrop
             const backdrop = document.createElement('div');
             backdrop.className = 'modal-backdrop fade show';
             document.body.appendChild(backdrop);
             document.body.classList.add('modal-open');
             
-            // Trigger shown.bs.modal event
             const event = new CustomEvent('shown.bs.modal');
             modal.dispatchEvent(event);
         }
@@ -858,19 +850,16 @@
             modal.classList.remove('show');
             modal.style.display = 'none';
             
-            // Remove backdrop
             const backdrop = document.querySelector('.modal-backdrop');
             if (backdrop) {
                 backdrop.parentNode.removeChild(backdrop);
             }
             document.body.classList.remove('modal-open');
             
-            // Trigger hidden.bs.modal event
             const event = new CustomEvent('hidden.bs.modal');
             modal.dispatchEvent(event);
         }
         
-        // Run setup when DOM is ready
         document.addEventListener('DOMContentLoaded', function() {
             setupTabs();
             setupModals();
@@ -881,9 +870,7 @@
         const API_BASE_URL = 'http://localhost:3000/api';
     </script>
     <script>
-        // Modal related functions for auth modal
         function showAuthModal(showRegister = false) {
-            // Show the modal using the vanilla JS modal function
             showModal('authModal');
             
             if (showRegister) {
@@ -898,7 +885,6 @@
         // Custom event setup for application-specific events
         function setupCustomEvents() {
             document.getElementById('authModal').addEventListener('shown.bs.modal', function () {
-                // Keep the current page visible
                 const currentPage = document.getElementById(`${AppState.currentPage}Content`);
                 if (currentPage) {
                     currentPage.style.display = 'block';
@@ -907,7 +893,6 @@
             });
 
             document.getElementById('authModal').addEventListener('hidden.bs.modal', function () {
-                // Show appropriate content when modal closes
                 if (AppState.currentUser) {
                     showDashboard();
                 } else {
@@ -917,7 +902,6 @@
 
             document.getElementById('createTeamModal').addEventListener('shown.bs.modal', function (event) {
                 if (event) event.preventDefault();
-                // Just use our preload function which doesn't fetch if data is already cached
                 preloadTeamDropdown();
             });
             
@@ -961,15 +945,14 @@
 
 <!-- Add back the missing JavaScript application code -->
 <script>
-    // Add state management
     const AppState = {
         currentPage: 'landing',
         currentUser: null,
         currentSessionId: null,
         isLoading: false,
         cachedCourses: [],
-        cachedStudents: {}, // Map of courseId -> students array
-        cachedTeams: []     // Add cached teams array
+        cachedStudents: {},
+        cachedTeams: []
     };
 
     // Global error handling functions
@@ -1013,7 +996,6 @@
     }
 
     document.addEventListener('DOMContentLoaded', function() {
-        // Form elements
         const loginForm = document.getElementById('frmLogin');
         const registerForm = document.getElementById('frmRegister');
         const btnLogin = document.getElementById('btnLogin');
@@ -1022,7 +1004,6 @@
         const btnSwapLogin = document.getElementById('btnSwapLogin');
         const authModal = document.getElementById('authModal');
 
-        // Input fields
         const txtEmail = document.getElementById('txtEmail');
         const txtPassword = document.getElementById('txtPassword');
         const txtRegEmail = document.getElementById('txtRegEmail');
@@ -1031,13 +1012,11 @@
         const txtFirstName = document.getElementById('txtFirstName');
         const txtLastName = document.getElementById('txtLastName');
 
-        // Event Listeners
         btnLogin.addEventListener('click', handleLogin);
         btnRegister.addEventListener('click', handleRegister);
         btnSwapRegister.addEventListener('click', () => swapForms(loginForm, registerForm));
         btnSwapLogin.addEventListener('click', () => swapForms(registerForm, loginForm));
 
-        // Add event listener for sign out button
         const signOutButton = document.getElementById('signOutButton');
         if (signOutButton) {
             signOutButton.addEventListener('click', function(e) {
@@ -1047,7 +1026,6 @@
             });
         }
         
-        // Also add a direct event listener on the Dashboard link
         const dashboardLink = document.getElementById('dashboardLink');
         if (dashboardLink) {
             dashboardLink.addEventListener('click', function(e) {
@@ -1183,7 +1161,6 @@
 
     // Check for existing session and page state on load
     document.addEventListener('DOMContentLoaded', () => {
-        // Hide all content initially
         const pages = document.querySelectorAll('.page-content');
         pages.forEach(page => {
             page.style.display = 'none';
@@ -1197,7 +1174,6 @@
         
         if (user && sessionId) {
             console.log('Found user and sessionId in localStorage:', user, sessionId);
-            // Verify the session is still valid
             verifySession(sessionId)
                 .then(valid => {
                     console.log('verifySession result:', valid);
@@ -1205,7 +1181,6 @@
                         AppState.currentUser = JSON.parse(user);
                         AppState.currentSessionId = sessionId;
                         updateUIForLoggedInUser();
-                        // Restore correct dashboard page
                         if (currentPage === 'teacherDashboard' || currentPage === 'studentDashboard') {
                             setPageState(currentPage);
                             if (currentPage === 'teacherDashboard') loadTeacherData();
@@ -1214,7 +1189,6 @@
                             showLanding();
                         }
                     } else {
-                        // Session is invalid, clear it
                         handleSessionExpiration();
                     }
                 })
@@ -1239,7 +1213,6 @@
                 }
             });
             
-            // If response is ok, session is valid
             return response.ok;
         } catch (error) {
             console.error('Session verification error:', error);
@@ -1258,11 +1231,9 @@
         localStorage.removeItem('currentUser');
         localStorage.removeItem('sessionId');
         
-        // Update UI
         updateUIForLoggedOutUser();
         showLanding();
         
-        // Show error message to user
         showError('Your session has expired. Please sign in again.');
     }
 
@@ -1379,16 +1350,13 @@
                 }
             }
 
-            // Update the enrolled courses count
             const enrolledCoursesCount = document.getElementById('enrolledCoursesCount');
             if (enrolledCoursesCount) {
                 enrolledCoursesCount.textContent = enrollmentsData.length;
             }
 
-            // Load teams data
             await loadStudentTeams();
             
-            // Load instructor reviews
             await loadInstructorReviews();
             
         } catch (error) {
@@ -1429,7 +1397,7 @@
                 return;
             }
             
-            tableBody.innerHTML = ''; // Clear old rows
+            tableBody.innerHTML = '';
 
             if (!teams || teams.length === 0) {
                 console.log('No teams found for student');
@@ -1438,7 +1406,6 @@
                         <td colspan="3" class="text-center">You have not been assigned to any teams yet.</td>
                     </tr>
                 `;
-                // Update teams count to 0
                 const teamsCountElement = document.getElementById('teamsCount');
                 if (teamsCountElement) {
                     teamsCountElement.textContent = '0';
@@ -1459,7 +1426,6 @@
                 tableBody.appendChild(row);
             });
 
-            // Update the teams count in the overview
             const teamsCountElement = document.getElementById('teamsCount');
             if (teamsCountElement) {
                 teamsCountElement.textContent = teams.length;
@@ -1479,7 +1445,6 @@
                     </tr>
                 `;
             }
-            // Reset teams count to 0 on error
             const teamsCountElement = document.getElementById('teamsCount');
             if (teamsCountElement) {
                 teamsCountElement.textContent = '0';
@@ -1489,7 +1454,6 @@
 
     async function loadTeacherData() {
         try {
-            // First, fetch and cache courses
             const response = await fetch(`${API_BASE_URL}/courses`, {
                 headers: {
                     'session-id': AppState.currentSessionId,
@@ -1506,10 +1470,8 @@
             
             const courses = await response.json();
             
-            // Cache the courses data
             AppState.cachedCourses = courses;
             
-            // Reset cached students
             AppState.cachedStudents = {};
             
             // If there are courses, prefetch students for ALL courses
@@ -1525,7 +1487,7 @@
                     })
                     .then(res => {
                         if (res.ok) return res.json();
-                        return []; // Empty array if fetch fails
+                        return [];
                     })
                     .then(students => {
                         AppState.cachedStudents[course.course_id] = students;
@@ -1533,17 +1495,15 @@
                     })
                     .catch(err => {
                         console.error(`Error fetching students for course ${course.course_id}:`, err);
-                        AppState.cachedStudents[course.course_id] = []; // Set empty array
+                        AppState.cachedStudents[course.course_id] = [];
                     });
                 });
                 
-                // Wait for all student data to be fetched
                 try {
                     await Promise.all(fetchPromises);
                     console.log('All student data prefetched successfully');
                 } catch (err) {
                     console.error('Error prefetching all student data:', err);
-                    // Non-critical error, continue loading the dashboard
                 }
             }
             
@@ -1560,7 +1520,6 @@
                     AppState.cachedTeams = teams;
                     console.log(`Cached ${teams.length} teams`);
                     
-                    // Display teams in the teams tab
                     displayTeams();
                 } else {
                     console.error('Failed to fetch teams data');
@@ -1571,7 +1530,6 @@
                 AppState.cachedTeams = [];
             }
             
-            // Update teacher dashboard with real data
             document.getElementById('teacherUserName').textContent = AppState.currentUser.firstName;
             
             // Update courses table
@@ -1603,24 +1561,18 @@
                 });
             }
 
-            // Update overview counts
             document.getElementById('activeCoursesCount').textContent = courses.length;
             
-            // TODO: Update other counts when we implement those features
             document.getElementById('totalStudentsCount').textContent = '0';
             document.getElementById('pendingReviewsCount').textContent = '0';
             document.getElementById('completedReviewsCount').textContent = '0';
             
-            // Preload the courses dropdown for team creation
             preloadTeamDropdown();
             
-            // Populate the review course dropdown
             populateReviewCourseDropdown();
             
-            // Load teacher reviews
             loadTeacherReviews();
 
-            // Load teacher student reports
             loadTeacherStudentReports();
             
         } catch (error) {
@@ -1649,14 +1601,12 @@
             const contentType = response.headers.get("content-type");
             if (!response.ok) {
                 let errorMsg = `HTTP error! status: ${response.status}`;
-                // Try to get more specific error from text if not JSON
                 if (contentType && contentType.indexOf("application/json") !== -1) {
                     const errorData = await response.json(); 
                     errorMsg = errorData.error || errorMsg;
                 } else {
-                    // If not JSON, maybe it's HTML or text
                     const textError = await response.text();
-                    console.error("Non-JSON error response:", textError); // Log the raw response
+                    console.error("Non-JSON error response:", textError);
                     errorMsg += " - Server sent non-JSON response."; 
                 }
                 throw new Error(errorMsg);
@@ -1668,10 +1618,9 @@
                  throw new Error("Received non-JSON response from server.");
             }
             
-            // If response is ok and content type is JSON, parse it
             const reports = await response.json();
 
-            tableBody.innerHTML = ''; // Clear loading/previous rows
+            tableBody.innerHTML = '';
 
             if (reports.length === 0) {
                 tableBody.innerHTML = '<tr><td colspan="2" class="text-center">No student data available for reports.</td></tr>';
@@ -1716,7 +1665,6 @@
         AppState.cachedTeams.forEach(team => {
             const row = document.createElement('tr');
             
-            // Format the members as a comma-separated list
             const membersText = Array.isArray(team.members) ? team.members.join(', ') : '';
             
             row.innerHTML = `
@@ -1732,7 +1680,6 @@
     // Add this function to handle course deletion
     async function deleteCourse(courseId) {
         try {
-            // Show confirmation dialog
             const result = await Swal.fire({
                 title: 'Are you sure?',
                 text: "You won't be able to revert this!",
@@ -1763,11 +1710,9 @@
 
             showSuccess('Course deleted successfully');
             
-            // Clear the course and student caches
             AppState.cachedCourses = [];
             AppState.cachedStudents = {};
             
-            // Refresh the course list and restore scroll position
             await loadTeacherData();
             window.scrollTo(0, currentScroll);
         } catch (error) {
@@ -1921,11 +1866,9 @@
 
             const result = await response.json();
 
-            // Clear the courses cache to ensure fresh data
             AppState.cachedCourses = [];
             AppState.cachedStudents = {};
 
-            // Close modal and refresh courses
             closeModal('createCourseModal');
             showSuccess(`Course created successfully! Course Code: ${result.courseId}`);
             loadTeacherData();
@@ -1956,7 +1899,6 @@
 
             showSuccess(`Successfully enrolled in course: ${result.courseName}`);
             
-            // Update the courses table
             const tableBody = document.querySelector('#student-courses tbody');
             const newRow = document.createElement('tr')
             newRow.innerHTML = `
@@ -1967,12 +1909,10 @@
             `;
             tableBody.appendChild(newRow);
 
-            // Update the enrolled courses count
             const enrolledCoursesCount = document.getElementById('enrolledCoursesCount');
             const currentCount = parseInt(enrolledCoursesCount.textContent) || 0;
             enrolledCoursesCount.textContent = currentCount + 1;
 
-            // Clear the input field
             document.getElementById('enrollCourseCode').value = '';
 
         } catch (err) {
@@ -1981,14 +1921,13 @@
     });
 
     document.getElementById('courseDropdown').addEventListener('change', (e) => {
-        e.preventDefault(); // Explicitly prevent default
-        e.stopPropagation(); // Stop event propagation
+        e.preventDefault();
+        e.stopPropagation();
         
         console.log('Course dropdown changed, loading students from cache only');
         try {
             const courseId = e.target.value;
             
-            // Use cached students only, preventing any fetch requests
             if (AppState.cachedStudents && AppState.cachedStudents[courseId]) {
                 console.log(`Using cached students for selected course: ${courseId}`);
                 populateStudentsDropdown(AppState.cachedStudents[courseId]);
@@ -2000,7 +1939,7 @@
             console.error('Error loading students:', error);
             showError('Failed to load students for course');
         }
-        return false; // Extra precaution
+        return false;
     });
 
     async function loadStudentsForCourse(courseId) {
@@ -2013,9 +1952,6 @@
         
         // If we get here, it means we don't have the student data cached
         console.log(`No cached students found for course ${courseId}`);
-        
-        // Instead of fetching and risking a page refresh, just show an empty list
-        // This should only happen if there's an error in caching logic, as we should have prefetched all courses
         populateStudentsDropdown([]);
         console.warn('Student data should have been prefetched. Using empty list to prevent refresh.');
     }
@@ -2037,17 +1973,15 @@
     async function preloadTeamDropdown() {
         console.log('Preloading team dropdown from cached data only');
         
-        // Get dropdown element - it might not exist yet if modal hasn't been opened
         const select = document.getElementById('courseDropdown');
         if (!select) {
             console.log('Course dropdown not found - modal probably not opened yet');
-            return; // Skip if not found
+            return;
         }
         
         select.innerHTML = '';
         
         if (AppState.cachedCourses && AppState.cachedCourses.length > 0) {
-            // Populate the courses dropdown
             AppState.cachedCourses.forEach(course => {
                 const option = document.createElement('option');
                 option.value = course.course_id;
@@ -2055,13 +1989,10 @@
                 select.appendChild(option);
             });
             
-            // Get first course ID
             const firstCourseId = AppState.cachedCourses[0].course_id;
             
-            // Check if we have students for this course already cached
             if (AppState.cachedStudents && AppState.cachedStudents[firstCourseId]) {
                 console.log(`Using cached students for first course: ${firstCourseId}`);
-                // Populate the students dropdown using cached data
                 populateStudentsDropdown(AppState.cachedStudents[firstCourseId]);
             } else {
                 console.warn('No cached students found for first course - using empty array');
@@ -2152,7 +2083,7 @@
             return; 
         }
         
-        select.innerHTML = ''; // Clear existing options
+        select.innerHTML = '';
         
         if (AppState.cachedCourses && AppState.cachedCourses.length > 0) {
             console.log('Populating review course dropdown from cache');
@@ -2164,7 +2095,7 @@
             });
         } else {
             console.warn('No cached courses available for review dropdown');
-            select.innerHTML = '<option value="">No courses found</option>'; // Placeholder
+            select.innerHTML = '<option value="">No courses found</option>';
         }
     }
 
@@ -2173,7 +2104,6 @@
         const pendingTableBody = document.getElementById('pendingReviewsTableBody');
         const completedTableBody = document.getElementById('completedReviewsTableBody');
 
-        // Clear existing rows
         pendingTableBody.innerHTML = '';
         completedTableBody.innerHTML = '';
 
@@ -2204,7 +2134,7 @@
                 const row = document.createElement('tr');
                 const courseDisplay = `${review.course_number} - ${review.course_name}`;
                 const endDate = new Date(review.end_time);
-                const isPending = review.status === 'pending' || review.status === 'open'; // Use status field
+                const isPending = review.status === 'pending' || review.status === 'open';
                 
                 // Use actual status and visibility from data
                 const statusBadge = isPending ? '<span class="badge badge-warning">Pending/Open</span>' : '<span class="badge badge-success">Completed</span>';
@@ -2230,7 +2160,6 @@
                 }
             });
 
-            // Update overview counts (simple update for now)
             document.getElementById('pendingReviewsCount').textContent = pendingCount;
             document.getElementById('completedReviewsCount').textContent = completedCount;
 
@@ -2252,7 +2181,7 @@
     // Function to add a new question row to the Create Review modal
     function addReviewQuestion() {
         const container = document.getElementById('questionsContainer');
-        const questionIndex = container.children.length; // For unique IDs if needed
+        const questionIndex = container.children.length;
 
         const questionDiv = document.createElement('div');
         questionDiv.classList.add('form-group', 'border', 'p-3', 'mb-3');
@@ -2281,10 +2210,10 @@
     // Function to handle the submission of the Create Review form
     async function handleCreateReview() {
         const form = document.getElementById('createReviewForm');
-        const reviewName = form.querySelector('input[type="text"]').value.trim(); // First text input assumed to be name
+        const reviewName = form.querySelector('input[type="text"]').value.trim();
         const courseId = document.getElementById('reviewCourseDropdown').value;
         const dueDate = form.querySelector('input[type="date"]').value;
-        const visibility = form.querySelector('select[required]:not(#reviewCourseDropdown)').value; // Second required select assumed visibility
+        const visibility = form.querySelector('select[required]:not(#reviewCourseDropdown)').value;
         
         const questionsContainer = document.getElementById('questionsContainer');
         const questionElements = questionsContainer.querySelectorAll('.form-group.border');
@@ -2293,9 +2222,9 @@
         questionElements.forEach(qDiv => {
             const type = qDiv.querySelector('.question-type').value;
             const text = qDiv.querySelector('.question-text').value.trim();
-            // Basic validation within the loop
-            if (text) { // Only add if text is provided
-                questions.push({ type, text, options: [] }); // Add options later if needed
+
+            if (text) {
+                questions.push({ type, text, options: [] });
             } 
         });
 
@@ -2310,9 +2239,9 @@
         const payload = {
             courseId: courseId,
             name: reviewName,
-            type: 'review', // Set type explicitly
-            startTime: new Date().toISOString(), // Use current time as start time
-            endTime: new Date(dueDate).toISOString(), // Ensure ISO format for end time
+            type: 'review',
+            startTime: new Date().toISOString(),
+            endTime: new Date(dueDate).toISOString(),
             visibility: visibility,
             questions: questions
         };
@@ -2320,7 +2249,7 @@
         console.log('Submitting review payload:', payload);
 
         try {
-            showLoading(); // Show loading indicator
+            showLoading();
             const response = await fetch(`${API_BASE_URL}/assessments`, {
                 method: 'POST',
                 headers: {
@@ -2339,15 +2268,15 @@
 
             showSuccess('Review created successfully!');
             closeModal('createReviewModal');
-            form.reset(); // Reset the form
-            questionsContainer.innerHTML = ''; // Clear dynamic questions
-            loadTeacherReviews(); // Refresh the reviews list
+            form.reset();
+            questionsContainer.innerHTML = '';
+            loadTeacherReviews();
 
         } catch (error) {
             console.error('Error creating review:', error);
             showError(error.message);
         } finally {
-            hideLoading(); // Hide loading indicator
+            hideLoading();
         }
     }
     
@@ -2358,7 +2287,6 @@
              submitBtn.addEventListener('click', handleCreateReview);
         }
        
-        // Add at least one question by default when modal opens (optional)
         const createReviewModal = document.getElementById('createReviewModal');
         if (createReviewModal) {
             createReviewModal.addEventListener('shown.bs.modal', function () {
@@ -2368,7 +2296,6 @@
                      addReviewQuestion(); 
                  }
             });
-            // Clear questions when modal is hidden
              createReviewModal.addEventListener('hidden.bs.modal', function () {
                  const container = document.getElementById('questionsContainer');
                  if(container) container.innerHTML = '';
@@ -2433,7 +2360,6 @@
         try {
             console.log('Starting loadStudentData function');
             
-            // First load enrollments
             const enrollmentsResponse = await fetch(`${API_BASE_URL}/enrollments/${AppState.currentUser.userId}`, {
                 headers: {
                     'session-id': AppState.currentSessionId
@@ -2448,13 +2374,11 @@
             const enrollmentsData = await enrollmentsResponse.json();
             console.log('Loaded enrollments data:', enrollmentsData);
             
-            // Update user name
             const userNameElement = document.getElementById('studentUserName');
             if (userNameElement) {
                 userNameElement.textContent = AppState.currentUser.firstName;
             }
             
-            // Update the courses table
             const tableBody = document.querySelector('#student-courses tbody');
             if (tableBody) {
                 tableBody.innerHTML = '';
@@ -2478,16 +2402,13 @@
                 }
             }
 
-            // Update the enrolled courses count
             const enrolledCoursesCount = document.getElementById('enrolledCoursesCount');
             if (enrolledCoursesCount) {
                 enrolledCoursesCount.textContent = enrollmentsData.length;
             }
 
-            // Load teams data
             await loadStudentTeams();
             
-            // Load instructor reviews
             await loadInstructorReviews();
             
         } catch (error) {
